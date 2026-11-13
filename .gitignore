@@ -1,0 +1,21 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+env/
+venv/
+lumstem/
+
+# Raw satellite imagery (Too big for GitHub)
+data/raw/*.tif
+
+# Numpy arrays (Too many/too heavy)
+data/tiles/*.npz
+
+# Note: We ARE allowing .csv files through so your UI works on GitHub!
+!data/tiles/metadata.csv
+!data/scores/*.csv

@@ -1,0 +1,194 @@
+tile_id,region_id,region_name,is_famous,center_lat,center_lon,min_lat,max_lat,min_lon,max_lon,area_km2,npz_path
+atacama_01_t000,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.03569,-68.36431,-23.07139,-23.0,-68.4,-68.32861,58.98,data/tiles/atacama_01_t000.npz
+atacama_01_t001,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.03569,-68.29319,-23.07139,-23.0,-68.32889,-68.2575,58.98,data/tiles/atacama_01_t001.npz
+atacama_01_t002,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.03569,-68.22208,-23.07139,-23.0,-68.25778,-68.18639,58.98,data/tiles/atacama_01_t002.npz
+atacama_01_t003,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.03569,-68.15097,-23.07139,-23.0,-68.18667,-68.11528,58.98,data/tiles/atacama_01_t003.npz
+atacama_01_t004,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.03569,-68.07986,-23.07139,-23.0,-68.11556,-68.04417,58.98,data/tiles/atacama_01_t004.npz
+atacama_01_t005,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.10681,-68.36431,-23.1425,-23.07111,-68.4,-68.32861,58.98,data/tiles/atacama_01_t005.npz
+atacama_01_t006,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.10681,-68.29319,-23.1425,-23.07111,-68.32889,-68.2575,58.98,data/tiles/atacama_01_t006.npz
+atacama_01_t007,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.10681,-68.22208,-23.1425,-23.07111,-68.25778,-68.18639,58.98,data/tiles/atacama_01_t007.npz
+atacama_01_t008,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.10681,-68.15097,-23.1425,-23.07111,-68.18667,-68.11528,58.98,data/tiles/atacama_01_t008.npz
+atacama_01_t009,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.10681,-68.07986,-23.1425,-23.07111,-68.11556,-68.04417,58.98,data/tiles/atacama_01_t009.npz
+atacama_01_t010,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.17792,-68.36431,-23.21361,-23.14222,-68.4,-68.32861,58.98,data/tiles/atacama_01_t010.npz
+atacama_01_t011,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.17792,-68.29319,-23.21361,-23.14222,-68.32889,-68.2575,58.98,data/tiles/atacama_01_t011.npz
+atacama_01_t012,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.17792,-68.22208,-23.21361,-23.14222,-68.25778,-68.18639,58.98,data/tiles/atacama_01_t012.npz
+atacama_01_t013,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.17792,-68.15097,-23.21361,-23.14222,-68.18667,-68.11528,58.98,data/tiles/atacama_01_t013.npz
+atacama_01_t014,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.17792,-68.07986,-23.21361,-23.14222,-68.11556,-68.04417,58.98,data/tiles/atacama_01_t014.npz
+atacama_01_t015,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.24903,-68.36431,-23.28472,-23.21333,-68.4,-68.32861,58.98,data/tiles/atacama_01_t015.npz
+atacama_01_t016,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.24903,-68.29319,-23.28472,-23.21333,-68.32889,-68.2575,58.98,data/tiles/atacama_01_t016.npz
+atacama_01_t017,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.24903,-68.22208,-23.28472,-23.21333,-68.25778,-68.18639,58.98,data/tiles/atacama_01_t017.npz
+atacama_01_t018,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.24903,-68.15097,-23.28472,-23.21333,-68.18667,-68.11528,58.98,data/tiles/atacama_01_t018.npz
+atacama_01_t019,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.24903,-68.07986,-23.28472,-23.21333,-68.11556,-68.04417,58.98,data/tiles/atacama_01_t019.npz
+atacama_01_t020,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.32014,-68.36431,-23.35583,-23.28444,-68.4,-68.32861,58.98,data/tiles/atacama_01_t020.npz
+atacama_01_t021,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.32014,-68.29319,-23.35583,-23.28444,-68.32889,-68.2575,58.98,data/tiles/atacama_01_t021.npz
+atacama_01_t022,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.32014,-68.22208,-23.35583,-23.28444,-68.25778,-68.18639,58.98,data/tiles/atacama_01_t022.npz
+atacama_01_t023,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.32014,-68.15097,-23.35583,-23.28444,-68.18667,-68.11528,58.98,data/tiles/atacama_01_t023.npz
+atacama_01_t024,atacama_01,"Atacama Desert, Chile (Arid Mars Analog)",True,-23.32014,-68.07986,-23.35583,-23.28444,-68.11556,-68.04417,58.98,data/tiles/atacama_01_t024.npz
+askja_01_t000,askja_01,"Askja Highlands, Iceland (Apollo Volcanic Training)",True,65.26431,-16.82861,65.22861,65.3,-16.9,-16.75722,58.98,data/tiles/askja_01_t000.npz
+askja_01_t001,askja_01,"Askja Highlands, Iceland (Apollo Volcanic Training)",True,65.26431,-16.68639,65.22861,65.3,-16.75778,-16.615,58.98,data/tiles/askja_01_t001.npz
+askja_01_t002,askja_01,"Askja Highlands, Iceland (Apollo Volcanic Training)",True,65.19319,-16.82861,65.1575,65.22889,-16.9,-16.75722,58.98,data/tiles/askja_01_t002.npz
+askja_01_t003,askja_01,"Askja Highlands, Iceland (Apollo Volcanic Training)",True,65.19319,-16.68639,65.1575,65.22889,-16.75778,-16.615,58.98,data/tiles/askja_01_t003.npz
+askja_01_t004,askja_01,"Askja Highlands, Iceland (Apollo Volcanic Training)",True,65.12208,-16.82861,65.08639,65.15778,-16.9,-16.75722,58.98,data/tiles/askja_01_t004.npz
+askja_01_t005,askja_01,"Askja Highlands, Iceland (Apollo Volcanic Training)",True,65.12208,-16.68639,65.08639,65.15778,-16.75778,-16.615,58.98,data/tiles/askja_01_t005.npz
+askja_01_t006,askja_01,"Askja Highlands, Iceland (Apollo Volcanic Training)",True,65.05097,-16.82861,65.01528,65.08667,-16.9,-16.75722,58.98,data/tiles/askja_01_t006.npz
+askja_01_t007,askja_01,"Askja Highlands, Iceland (Apollo Volcanic Training)",True,65.05097,-16.68639,65.01528,65.08667,-16.75778,-16.615,58.98,data/tiles/askja_01_t007.npz
+devon_01_t000,devon_01,"Devon Island, Canada (Haughton Impact Crater)",True,75.56431,-89.79292,75.52861,75.6,-89.9,-89.68583,58.98,data/tiles/devon_01_t000.npz
+devon_01_t001,devon_01,"Devon Island, Canada (Haughton Impact Crater)",True,75.49319,-89.79292,75.4575,75.52889,-89.9,-89.68583,58.98,data/tiles/devon_01_t001.npz
+devon_01_t002,devon_01,"Devon Island, Canada (Haughton Impact Crater)",True,75.42208,-89.79292,75.38639,75.45778,-89.9,-89.68583,58.98,data/tiles/devon_01_t002.npz
+devon_01_t003,devon_01,"Devon Island, Canada (Haughton Impact Crater)",True,75.35097,-89.79292,75.31528,75.38667,-89.9,-89.68583,58.98,data/tiles/devon_01_t003.npz
+devon_01_t004,devon_01,"Devon Island, Canada (Haughton Impact Crater)",True,75.27986,-89.79292,75.24417,75.31556,-89.9,-89.68583,58.98,data/tiles/devon_01_t004.npz
+pinacate_01_t000,pinacate_01,"El Pinacate, Mexico (Lunar Volcanic Field)",True,32.06431,-113.56431,32.02861,32.1,-113.6,-113.52861,58.98,data/tiles/pinacate_01_t000.npz
+pinacate_01_t001,pinacate_01,"El Pinacate, Mexico (Lunar Volcanic Field)",True,32.06431,-113.49319,32.02861,32.1,-113.52889,-113.4575,58.98,data/tiles/pinacate_01_t001.npz
+pinacate_01_t002,pinacate_01,"El Pinacate, Mexico (Lunar Volcanic Field)",True,32.06431,-113.42208,32.02861,32.1,-113.45778,-113.38639,58.98,data/tiles/pinacate_01_t002.npz
+pinacate_01_t003,pinacate_01,"El Pinacate, Mexico (Lunar Volcanic Field)",True,32.06431,-113.35097,32.02861,32.1,-113.38667,-113.31528,58.98,data/tiles/pinacate_01_t003.npz
+pinacate_01_t004,pinacate_01,"El Pinacate, Mexico (Lunar Volcanic Field)",True,32.06431,-113.27986,32.02861,32.1,-113.31556,-113.24417,58.98,data/tiles/pinacate_01_t004.npz
+kilauea_01_t000,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.66431,-155.26431,19.62861,19.7,-155.3,-155.22861,58.98,data/tiles/kilauea_01_t000.npz
+kilauea_01_t001,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.66431,-155.19319,19.62861,19.7,-155.22889,-155.1575,58.98,data/tiles/kilauea_01_t001.npz
+kilauea_01_t002,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.66431,-155.12208,19.62861,19.7,-155.15778,-155.08639,58.98,data/tiles/kilauea_01_t002.npz
+kilauea_01_t003,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.66431,-155.05097,19.62861,19.7,-155.08667,-155.01528,58.98,data/tiles/kilauea_01_t003.npz
+kilauea_01_t004,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.59319,-155.26431,19.5575,19.62889,-155.3,-155.22861,58.98,data/tiles/kilauea_01_t004.npz
+kilauea_01_t005,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.59319,-155.19319,19.5575,19.62889,-155.22889,-155.1575,58.98,data/tiles/kilauea_01_t005.npz
+kilauea_01_t006,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.59319,-155.12208,19.5575,19.62889,-155.15778,-155.08639,58.98,data/tiles/kilauea_01_t006.npz
+kilauea_01_t007,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.59319,-155.05097,19.5575,19.62889,-155.08667,-155.01528,58.98,data/tiles/kilauea_01_t007.npz
+kilauea_01_t008,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.52208,-155.26431,19.48639,19.55778,-155.3,-155.22861,58.98,data/tiles/kilauea_01_t008.npz
+kilauea_01_t009,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.52208,-155.19319,19.48639,19.55778,-155.22889,-155.1575,58.98,data/tiles/kilauea_01_t009.npz
+kilauea_01_t010,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.52208,-155.12208,19.48639,19.55778,-155.15778,-155.08639,58.98,data/tiles/kilauea_01_t010.npz
+kilauea_01_t011,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.52208,-155.05097,19.48639,19.55778,-155.08667,-155.01528,58.98,data/tiles/kilauea_01_t011.npz
+kilauea_01_t012,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.45097,-155.26431,19.41528,19.48667,-155.3,-155.22861,58.98,data/tiles/kilauea_01_t012.npz
+kilauea_01_t013,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.45097,-155.19319,19.41528,19.48667,-155.22889,-155.1575,58.98,data/tiles/kilauea_01_t013.npz
+kilauea_01_t014,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.45097,-155.12208,19.41528,19.48667,-155.15778,-155.08639,58.98,data/tiles/kilauea_01_t014.npz
+kilauea_01_t015,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.45097,-155.05097,19.41528,19.48667,-155.08667,-155.01528,58.98,data/tiles/kilauea_01_t015.npz
+kilauea_01_t016,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.37986,-155.26431,19.34417,19.41556,-155.3,-155.22861,58.98,data/tiles/kilauea_01_t016.npz
+kilauea_01_t017,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.37986,-155.19319,19.34417,19.41556,-155.22889,-155.1575,58.98,data/tiles/kilauea_01_t017.npz
+kilauea_01_t018,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.37986,-155.12208,19.34417,19.41556,-155.15778,-155.08639,58.98,data/tiles/kilauea_01_t018.npz
+kilauea_01_t019,kilauea_01,"Kilauea Volcanic Desert, Hawaii",True,19.37986,-155.05097,19.34417,19.41556,-155.08667,-155.01528,58.98,data/tiles/kilauea_01_t019.npz
+mcmurdo_01_t000,mcmurdo_01,"McMurdo Dry Valleys, Antarctica (Extreme Cold)",True,-77.23569,161.60708,-77.27139,-77.2,161.5,161.71417,58.98,data/tiles/mcmurdo_01_t000.npz
+mcmurdo_01_t001,mcmurdo_01,"McMurdo Dry Valleys, Antarctica (Extreme Cold)",True,-77.30681,161.60708,-77.3425,-77.27111,161.5,161.71417,58.98,data/tiles/mcmurdo_01_t001.npz
+mcmurdo_01_t002,mcmurdo_01,"McMurdo Dry Valleys, Antarctica (Extreme Cold)",True,-77.37792,161.60708,-77.41361,-77.34222,161.5,161.71417,58.98,data/tiles/mcmurdo_01_t002.npz
+mcmurdo_01_t003,mcmurdo_01,"McMurdo Dry Valleys, Antarctica (Extreme Cold)",True,-77.44903,161.60708,-77.48472,-77.41333,161.5,161.71417,58.98,data/tiles/mcmurdo_01_t003.npz
+mcmurdo_01_t004,mcmurdo_01,"McMurdo Dry Valleys, Antarctica (Extreme Cold)",True,-77.52014,161.60708,-77.55583,-77.48444,161.5,161.71417,58.98,data/tiles/mcmurdo_01_t004.npz
+wadi_rum_01_t000,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.86431,35.33569,29.82861,29.9,35.3,35.37139,58.98,data/tiles/wadi_rum_01_t000.npz
+wadi_rum_01_t001,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.86431,35.40681,29.82861,29.9,35.37111,35.4425,58.98,data/tiles/wadi_rum_01_t001.npz
+wadi_rum_01_t002,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.86431,35.47792,29.82861,29.9,35.44222,35.51361,58.98,data/tiles/wadi_rum_01_t002.npz
+wadi_rum_01_t003,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.86431,35.54903,29.82861,29.9,35.51333,35.58472,58.98,data/tiles/wadi_rum_01_t003.npz
+wadi_rum_01_t004,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.86431,35.62014,29.82861,29.9,35.58444,35.65583,58.98,data/tiles/wadi_rum_01_t004.npz
+wadi_rum_01_t005,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.79319,35.33569,29.7575,29.82889,35.3,35.37139,58.98,data/tiles/wadi_rum_01_t005.npz
+wadi_rum_01_t006,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.79319,35.40681,29.7575,29.82889,35.37111,35.4425,58.98,data/tiles/wadi_rum_01_t006.npz
+wadi_rum_01_t007,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.79319,35.47792,29.7575,29.82889,35.44222,35.51361,58.98,data/tiles/wadi_rum_01_t007.npz
+wadi_rum_01_t008,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.79319,35.54903,29.7575,29.82889,35.51333,35.58472,58.98,data/tiles/wadi_rum_01_t008.npz
+wadi_rum_01_t009,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.79319,35.62014,29.7575,29.82889,35.58444,35.65583,58.98,data/tiles/wadi_rum_01_t009.npz
+wadi_rum_01_t010,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.72208,35.33569,29.68639,29.75778,35.3,35.37139,58.98,data/tiles/wadi_rum_01_t010.npz
+wadi_rum_01_t011,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.72208,35.40681,29.68639,29.75778,35.37111,35.4425,58.98,data/tiles/wadi_rum_01_t011.npz
+wadi_rum_01_t012,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.72208,35.47792,29.68639,29.75778,35.44222,35.51361,58.98,data/tiles/wadi_rum_01_t012.npz
+wadi_rum_01_t013,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.72208,35.54903,29.68639,29.75778,35.51333,35.58472,58.98,data/tiles/wadi_rum_01_t013.npz
+wadi_rum_01_t014,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.72208,35.62014,29.68639,29.75778,35.58444,35.65583,58.98,data/tiles/wadi_rum_01_t014.npz
+wadi_rum_01_t015,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.65097,35.33569,29.61528,29.68667,35.3,35.37139,58.98,data/tiles/wadi_rum_01_t015.npz
+wadi_rum_01_t016,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.65097,35.40681,29.61528,29.68667,35.37111,35.4425,58.98,data/tiles/wadi_rum_01_t016.npz
+wadi_rum_01_t017,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.65097,35.47792,29.61528,29.68667,35.44222,35.51361,58.98,data/tiles/wadi_rum_01_t017.npz
+wadi_rum_01_t018,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.65097,35.54903,29.61528,29.68667,35.51333,35.58472,58.98,data/tiles/wadi_rum_01_t018.npz
+wadi_rum_01_t019,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.65097,35.62014,29.61528,29.68667,35.58444,35.65583,58.98,data/tiles/wadi_rum_01_t019.npz
+wadi_rum_01_t020,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.57986,35.33569,29.54417,29.61556,35.3,35.37139,58.98,data/tiles/wadi_rum_01_t020.npz
+wadi_rum_01_t021,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.57986,35.40681,29.54417,29.61556,35.37111,35.4425,58.98,data/tiles/wadi_rum_01_t021.npz
+wadi_rum_01_t022,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.57986,35.47792,29.54417,29.61556,35.44222,35.51361,58.98,data/tiles/wadi_rum_01_t022.npz
+wadi_rum_01_t023,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.57986,35.54903,29.54417,29.61556,35.51333,35.58472,58.98,data/tiles/wadi_rum_01_t023.npz
+wadi_rum_01_t024,wadi_rum_01,"Wadi Rum, Jordan (Martian Geomorphology)",True,29.57986,35.62014,29.54417,29.61556,35.58444,35.65583,58.98,data/tiles/wadi_rum_01_t024.npz
+arizaro_01_t000,arizaro_01,"Salar de Arizaro, Argentina (High Altitude Salt)",False,-24.73569,-67.76431,-24.77139,-24.7,-67.8,-67.72861,58.98,data/tiles/arizaro_01_t000.npz
+arizaro_01_t001,arizaro_01,"Salar de Arizaro, Argentina (High Altitude Salt)",False,-24.73569,-67.69319,-24.77139,-24.7,-67.72889,-67.6575,58.98,data/tiles/arizaro_01_t001.npz
+arizaro_01_t002,arizaro_01,"Salar de Arizaro, Argentina (High Altitude Salt)",False,-24.73569,-67.62208,-24.77139,-24.7,-67.65778,-67.58639,58.98,data/tiles/arizaro_01_t002.npz
+arizaro_01_t003,arizaro_01,"Salar de Arizaro, Argentina (High Altitude Salt)",False,-24.73569,-67.55097,-24.77139,-24.7,-67.58667,-67.51528,58.98,data/tiles/arizaro_01_t003.npz
+arizaro_01_t004,arizaro_01,"Salar de Arizaro, Argentina (High Altitude Salt)",False,-24.73569,-67.47986,-24.77139,-24.7,-67.51556,-67.44417,58.98,data/tiles/arizaro_01_t004.npz
+khaybar_01_t000,khaybar_01,"Harrat Khaybar Basalt Fields, Saudi Arabia",False,25.86431,39.83569,25.82861,25.9,39.8,39.87139,58.98,data/tiles/khaybar_01_t000.npz
+khaybar_01_t001,khaybar_01,"Harrat Khaybar Basalt Fields, Saudi Arabia",False,25.86431,39.90681,25.82861,25.9,39.87111,39.9425,58.98,data/tiles/khaybar_01_t001.npz
+khaybar_01_t002,khaybar_01,"Harrat Khaybar Basalt Fields, Saudi Arabia",False,25.79319,39.83569,25.7575,25.82889,39.8,39.87139,58.98,data/tiles/khaybar_01_t002.npz
+khaybar_01_t003,khaybar_01,"Harrat Khaybar Basalt Fields, Saudi Arabia",False,25.79319,39.90681,25.7575,25.82889,39.87111,39.9425,58.98,data/tiles/khaybar_01_t003.npz
+khaybar_01_t004,khaybar_01,"Harrat Khaybar Basalt Fields, Saudi Arabia",False,25.72208,39.83569,25.68639,25.75778,39.8,39.87139,58.98,data/tiles/khaybar_01_t004.npz
+khaybar_01_t005,khaybar_01,"Harrat Khaybar Basalt Fields, Saudi Arabia",False,25.72208,39.90681,25.68639,25.75778,39.87111,39.9425,58.98,data/tiles/khaybar_01_t005.npz
+khaybar_01_t006,khaybar_01,"Harrat Khaybar Basalt Fields, Saudi Arabia",False,25.65097,39.83569,25.61528,25.68667,39.8,39.87139,58.98,data/tiles/khaybar_01_t006.npz
+khaybar_01_t007,khaybar_01,"Harrat Khaybar Basalt Fields, Saudi Arabia",False,25.65097,39.90681,25.61528,25.68667,39.87111,39.9425,58.98,data/tiles/khaybar_01_t007.npz
+khaybar_01_t008,khaybar_01,"Harrat Khaybar Basalt Fields, Saudi Arabia",False,25.57986,39.83569,25.54417,25.61556,39.8,39.87139,58.98,data/tiles/khaybar_01_t008.npz
+khaybar_01_t009,khaybar_01,"Harrat Khaybar Basalt Fields, Saudi Arabia",False,25.57986,39.90681,25.54417,25.61556,39.87111,39.9425,58.98,data/tiles/khaybar_01_t009.npz
+tibesti_01_t000,tibesti_01,"Tibesti Volcanic Calderas, Chad",False,21.16431,17.23569,21.12861,21.2,17.2,17.27139,58.98,data/tiles/tibesti_01_t000.npz
+tibesti_01_t001,tibesti_01,"Tibesti Volcanic Calderas, Chad",False,21.16431,17.30681,21.12861,21.2,17.27111,17.3425,58.98,data/tiles/tibesti_01_t001.npz
+tibesti_01_t002,tibesti_01,"Tibesti Volcanic Calderas, Chad",False,21.16431,17.37792,21.12861,21.2,17.34222,17.41361,58.98,data/tiles/tibesti_01_t002.npz
+tibesti_01_t003,tibesti_01,"Tibesti Volcanic Calderas, Chad",False,21.16431,17.44903,21.12861,21.2,17.41333,17.48472,58.98,data/tiles/tibesti_01_t003.npz
+tibesti_01_t004,tibesti_01,"Tibesti Volcanic Calderas, Chad",False,21.16431,17.52014,21.12861,21.2,17.48444,17.55583,58.98,data/tiles/tibesti_01_t004.npz
+tibesti_01_t005,tibesti_01,"Tibesti Volcanic Calderas, Chad",False,21.09319,17.23569,21.0575,21.12889,17.2,17.27139,58.98,data/tiles/tibesti_01_t005.npz
+tibesti_01_t006,tibesti_01,"Tibesti Volcanic Calderas, Chad",False,21.09319,17.30681,21.0575,21.12889,17.27111,17.3425,58.98,data/tiles/tibesti_01_t006.npz
+tibesti_01_t007,tibesti_01,"Tibesti Volcanic Calderas, Chad",False,21.09319,17.37792,21.0575,21.12889,17.34222,17.41361,58.98,data/tiles/tibesti_01_t007.npz
+tibesti_01_t008,tibesti_01,"Tibesti Volcanic Calderas, Chad",False,21.09319,17.44903,21.0575,21.12889,17.41333,17.48472,58.98,data/tiles/tibesti_01_t008.npz
+tibesti_01_t009,tibesti_01,"Tibesti Volcanic Calderas, Chad",False,21.09319,17.52014,21.0575,21.12889,17.48444,17.55583,58.98,data/tiles/tibesti_01_t009.npz
+makgadikgadi_01_t000,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.53569,25.23569,-20.57139,-20.5,25.2,25.27139,58.98,data/tiles/makgadikgadi_01_t000.npz
+makgadikgadi_01_t001,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.53569,25.30681,-20.57139,-20.5,25.27111,25.3425,58.98,data/tiles/makgadikgadi_01_t001.npz
+makgadikgadi_01_t002,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.53569,25.37792,-20.57139,-20.5,25.34222,25.41361,58.98,data/tiles/makgadikgadi_01_t002.npz
+makgadikgadi_01_t003,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.53569,25.44903,-20.57139,-20.5,25.41333,25.48472,58.98,data/tiles/makgadikgadi_01_t003.npz
+makgadikgadi_01_t004,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.53569,25.52014,-20.57139,-20.5,25.48444,25.55583,58.98,data/tiles/makgadikgadi_01_t004.npz
+makgadikgadi_01_t005,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.60681,25.23569,-20.6425,-20.57111,25.2,25.27139,58.98,data/tiles/makgadikgadi_01_t005.npz
+makgadikgadi_01_t006,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.60681,25.30681,-20.6425,-20.57111,25.27111,25.3425,58.98,data/tiles/makgadikgadi_01_t006.npz
+makgadikgadi_01_t007,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.60681,25.37792,-20.6425,-20.57111,25.34222,25.41361,58.98,data/tiles/makgadikgadi_01_t007.npz
+makgadikgadi_01_t008,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.60681,25.44903,-20.6425,-20.57111,25.41333,25.48472,58.98,data/tiles/makgadikgadi_01_t008.npz
+makgadikgadi_01_t009,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.60681,25.52014,-20.6425,-20.57111,25.48444,25.55583,58.98,data/tiles/makgadikgadi_01_t009.npz
+makgadikgadi_01_t010,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.67792,25.23569,-20.71361,-20.64222,25.2,25.27139,58.98,data/tiles/makgadikgadi_01_t010.npz
+makgadikgadi_01_t011,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.67792,25.30681,-20.71361,-20.64222,25.27111,25.3425,58.98,data/tiles/makgadikgadi_01_t011.npz
+makgadikgadi_01_t012,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.67792,25.37792,-20.71361,-20.64222,25.34222,25.41361,58.98,data/tiles/makgadikgadi_01_t012.npz
+makgadikgadi_01_t013,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.67792,25.44903,-20.71361,-20.64222,25.41333,25.48472,58.98,data/tiles/makgadikgadi_01_t013.npz
+makgadikgadi_01_t014,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.67792,25.52014,-20.71361,-20.64222,25.48444,25.55583,58.98,data/tiles/makgadikgadi_01_t014.npz
+makgadikgadi_01_t015,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.74903,25.23569,-20.78472,-20.71333,25.2,25.27139,58.98,data/tiles/makgadikgadi_01_t015.npz
+makgadikgadi_01_t016,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.74903,25.30681,-20.78472,-20.71333,25.27111,25.3425,58.98,data/tiles/makgadikgadi_01_t016.npz
+makgadikgadi_01_t017,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.74903,25.37792,-20.78472,-20.71333,25.34222,25.41361,58.98,data/tiles/makgadikgadi_01_t017.npz
+makgadikgadi_01_t018,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.74903,25.44903,-20.78472,-20.71333,25.41333,25.48472,58.98,data/tiles/makgadikgadi_01_t018.npz
+makgadikgadi_01_t019,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.74903,25.52014,-20.78472,-20.71333,25.48444,25.55583,58.98,data/tiles/makgadikgadi_01_t019.npz
+makgadikgadi_01_t020,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.82014,25.23569,-20.85583,-20.78444,25.2,25.27139,58.98,data/tiles/makgadikgadi_01_t020.npz
+makgadikgadi_01_t021,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.82014,25.30681,-20.85583,-20.78444,25.27111,25.3425,58.98,data/tiles/makgadikgadi_01_t021.npz
+makgadikgadi_01_t022,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.82014,25.37792,-20.85583,-20.78444,25.34222,25.41361,58.98,data/tiles/makgadikgadi_01_t022.npz
+makgadikgadi_01_t023,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.82014,25.44903,-20.85583,-20.78444,25.41333,25.48472,58.98,data/tiles/makgadikgadi_01_t023.npz
+makgadikgadi_01_t024,makgadikgadi_01,"Makgadikgadi Pans, Botswana",False,-20.82014,25.52014,-20.85583,-20.78444,25.48444,25.55583,58.98,data/tiles/makgadikgadi_01_t024.npz
+danakil_01_t000,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.36431,40.13569,14.32861,14.4,40.1,40.17139,58.98,data/tiles/danakil_01_t000.npz
+danakil_01_t001,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.36431,40.20681,14.32861,14.4,40.17111,40.2425,58.98,data/tiles/danakil_01_t001.npz
+danakil_01_t002,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.36431,40.27792,14.32861,14.4,40.24222,40.31361,58.98,data/tiles/danakil_01_t002.npz
+danakil_01_t003,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.36431,40.34903,14.32861,14.4,40.31333,40.38472,58.98,data/tiles/danakil_01_t003.npz
+danakil_01_t004,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.36431,40.42014,14.32861,14.4,40.38444,40.45583,58.98,data/tiles/danakil_01_t004.npz
+danakil_01_t005,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.29319,40.13569,14.2575,14.32889,40.1,40.17139,58.98,data/tiles/danakil_01_t005.npz
+danakil_01_t006,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.29319,40.20681,14.2575,14.32889,40.17111,40.2425,58.98,data/tiles/danakil_01_t006.npz
+danakil_01_t007,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.29319,40.27792,14.2575,14.32889,40.24222,40.31361,58.98,data/tiles/danakil_01_t007.npz
+danakil_01_t008,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.29319,40.34903,14.2575,14.32889,40.31333,40.38472,58.98,data/tiles/danakil_01_t008.npz
+danakil_01_t009,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.29319,40.42014,14.2575,14.32889,40.38444,40.45583,58.98,data/tiles/danakil_01_t009.npz
+danakil_01_t010,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.22208,40.13569,14.18639,14.25778,40.1,40.17139,58.98,data/tiles/danakil_01_t010.npz
+danakil_01_t011,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.22208,40.20681,14.18639,14.25778,40.17111,40.2425,58.98,data/tiles/danakil_01_t011.npz
+danakil_01_t012,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.22208,40.27792,14.18639,14.25778,40.24222,40.31361,58.98,data/tiles/danakil_01_t012.npz
+danakil_01_t013,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.22208,40.34903,14.18639,14.25778,40.31333,40.38472,58.98,data/tiles/danakil_01_t013.npz
+danakil_01_t014,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.22208,40.42014,14.18639,14.25778,40.38444,40.45583,58.98,data/tiles/danakil_01_t014.npz
+danakil_01_t015,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.15097,40.13569,14.11528,14.18667,40.1,40.17139,58.98,data/tiles/danakil_01_t015.npz
+danakil_01_t016,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.15097,40.20681,14.11528,14.18667,40.17111,40.2425,58.98,data/tiles/danakil_01_t016.npz
+danakil_01_t017,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.15097,40.27792,14.11528,14.18667,40.24222,40.31361,58.98,data/tiles/danakil_01_t017.npz
+danakil_01_t018,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.15097,40.34903,14.11528,14.18667,40.31333,40.38472,58.98,data/tiles/danakil_01_t018.npz
+danakil_01_t019,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.15097,40.42014,14.11528,14.18667,40.38444,40.45583,58.98,data/tiles/danakil_01_t019.npz
+danakil_01_t020,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.07986,40.13569,14.04417,14.11556,40.1,40.17139,58.98,data/tiles/danakil_01_t020.npz
+danakil_01_t021,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.07986,40.20681,14.04417,14.11556,40.17111,40.2425,58.98,data/tiles/danakil_01_t021.npz
+danakil_01_t022,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.07986,40.27792,14.04417,14.11556,40.24222,40.31361,58.98,data/tiles/danakil_01_t022.npz
+danakil_01_t023,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.07986,40.34903,14.04417,14.11556,40.31333,40.38472,58.98,data/tiles/danakil_01_t023.npz
+danakil_01_t024,danakil_01,"Danakil Depression, Ethiopia (Hydrothermal Extremes)",False,14.07986,40.42014,14.04417,14.11556,40.38444,40.45583,58.98,data/tiles/danakil_01_t024.npz
+namib_01_t000,namib_01,"Namib Sand Sea, Namibia",False,-24.43569,15.23569,-24.47139,-24.4,15.2,15.27139,58.98,data/tiles/namib_01_t000.npz
+namib_01_t001,namib_01,"Namib Sand Sea, Namibia",False,-24.43569,15.30681,-24.47139,-24.4,15.27111,15.3425,58.98,data/tiles/namib_01_t001.npz
+namib_01_t002,namib_01,"Namib Sand Sea, Namibia",False,-24.43569,15.37792,-24.47139,-24.4,15.34222,15.41361,58.98,data/tiles/namib_01_t002.npz
+namib_01_t003,namib_01,"Namib Sand Sea, Namibia",False,-24.43569,15.44903,-24.47139,-24.4,15.41333,15.48472,58.98,data/tiles/namib_01_t003.npz
+namib_01_t004,namib_01,"Namib Sand Sea, Namibia",False,-24.43569,15.52014,-24.47139,-24.4,15.48444,15.55583,58.98,data/tiles/namib_01_t004.npz
+namib_01_t005,namib_01,"Namib Sand Sea, Namibia",False,-24.50681,15.23569,-24.5425,-24.47111,15.2,15.27139,58.98,data/tiles/namib_01_t005.npz
+namib_01_t006,namib_01,"Namib Sand Sea, Namibia",False,-24.50681,15.30681,-24.5425,-24.47111,15.27111,15.3425,58.98,data/tiles/namib_01_t006.npz
+namib_01_t007,namib_01,"Namib Sand Sea, Namibia",False,-24.50681,15.37792,-24.5425,-24.47111,15.34222,15.41361,58.98,data/tiles/namib_01_t007.npz
+namib_01_t008,namib_01,"Namib Sand Sea, Namibia",False,-24.50681,15.44903,-24.5425,-24.47111,15.41333,15.48472,58.98,data/tiles/namib_01_t008.npz
+namib_01_t009,namib_01,"Namib Sand Sea, Namibia",False,-24.50681,15.52014,-24.5425,-24.47111,15.48444,15.55583,58.98,data/tiles/namib_01_t009.npz
+namib_01_t010,namib_01,"Namib Sand Sea, Namibia",False,-24.57792,15.23569,-24.61361,-24.54222,15.2,15.27139,58.98,data/tiles/namib_01_t010.npz
+namib_01_t011,namib_01,"Namib Sand Sea, Namibia",False,-24.57792,15.30681,-24.61361,-24.54222,15.27111,15.3425,58.98,data/tiles/namib_01_t011.npz
+namib_01_t012,namib_01,"Namib Sand Sea, Namibia",False,-24.57792,15.37792,-24.61361,-24.54222,15.34222,15.41361,58.98,data/tiles/namib_01_t012.npz
+namib_01_t013,namib_01,"Namib Sand Sea, Namibia",False,-24.57792,15.44903,-24.61361,-24.54222,15.41333,15.48472,58.98,data/tiles/namib_01_t013.npz
+namib_01_t014,namib_01,"Namib Sand Sea, Namibia",False,-24.57792,15.52014,-24.61361,-24.54222,15.48444,15.55583,58.98,data/tiles/namib_01_t014.npz
+namib_01_t015,namib_01,"Namib Sand Sea, Namibia",False,-24.64903,15.23569,-24.68472,-24.61333,15.2,15.27139,58.98,data/tiles/namib_01_t015.npz
+namib_01_t016,namib_01,"Namib Sand Sea, Namibia",False,-24.64903,15.30681,-24.68472,-24.61333,15.27111,15.3425,58.98,data/tiles/namib_01_t016.npz
+namib_01_t017,namib_01,"Namib Sand Sea, Namibia",False,-24.64903,15.37792,-24.68472,-24.61333,15.34222,15.41361,58.98,data/tiles/namib_01_t017.npz
+namib_01_t018,namib_01,"Namib Sand Sea, Namibia",False,-24.64903,15.44903,-24.68472,-24.61333,15.41333,15.48472,58.98,data/tiles/namib_01_t018.npz
+namib_01_t019,namib_01,"Namib Sand Sea, Namibia",False,-24.64903,15.52014,-24.68472,-24.61333,15.48444,15.55583,58.98,data/tiles/namib_01_t019.npz
+namib_01_t020,namib_01,"Namib Sand Sea, Namibia",False,-24.72014,15.23569,-24.75583,-24.68444,15.2,15.27139,58.98,data/tiles/namib_01_t020.npz
+namib_01_t021,namib_01,"Namib Sand Sea, Namibia",False,-24.72014,15.30681,-24.75583,-24.68444,15.27111,15.3425,58.98,data/tiles/namib_01_t021.npz
+namib_01_t022,namib_01,"Namib Sand Sea, Namibia",False,-24.72014,15.37792,-24.75583,-24.68444,15.34222,15.41361,58.98,data/tiles/namib_01_t022.npz
+namib_01_t023,namib_01,"Namib Sand Sea, Namibia",False,-24.72014,15.44903,-24.75583,-24.68444,15.41333,15.48472,58.98,data/tiles/namib_01_t023.npz
+namib_01_t024,namib_01,"Namib Sand Sea, Namibia",False,-24.72014,15.52014,-24.75583,-24.68444,15.48444,15.55583,58.98,data/tiles/namib_01_t024.npz
