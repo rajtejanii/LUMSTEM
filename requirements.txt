@@ -5,5 +5,7 @@ rasterio
 torch
 torchvision
 pystac-client
+earthaccess
+python-dotenv
 streamlit
 plotly

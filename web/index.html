@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="LUMSTEM: Multi-Modal Planetary Analog Mission Control for Moon and Mars Landing Site Evaluation." />
+  <meta name="ai-disclosure" content="SI/AI-Assisted Development: Pre-trained Meta DINOv2 ViT used for terrain feature extraction; LLM coding assistance (Google Gemini) used for UI layout and refactoring. Contains no NASA branding." />
   <title>LUMSTEM // Planetary Analog Mission Control</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -44,9 +46,9 @@
     
     /* Sleek Table Styling */
     .table-container { overflow-y: auto; height: 100%; }
-    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.75rem; }
-    th { position: sticky; top: 0; background: rgba(5, 7, 12, 0.95); padding: 8px 12px; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; z-index: 10; border-bottom: 1px solid rgba(255,255,255,0.15); }
-    td { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.74rem; }
+    th { position: sticky; top: 0; background: rgba(5, 7, 12, 0.95); padding: 7px 10px; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; z-index: 10; border-bottom: 1px solid rgba(255,255,255,0.15); }
+    td { padding: 7px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
     tr:hover td { background: rgba(255,255,255,0.12); cursor: pointer; }
     tr.active-row td { background: rgba(var(--accent-rgb), 0.3) !important; color: #FFF; font-weight: bold; }
     
@@ -69,7 +71,7 @@
       z-index: 30;
     }
 
-    /* Callout Label Pill (Independently decluttered when zoomed out so labels never stack) */
+    /* Callout Label Pill */
     .globe-callout-pill {
       position: absolute;
       transform: translate(-50%, -50%);
@@ -99,6 +101,53 @@
       border-color: #FFF;
       z-index: 40;
     }
+
+    /* Parameter Info Badge ('i') & Floating Popover Bubble */
+    .info-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      border-radius: 9999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      color: #94A3B8;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      line-height: 1;
+    }
+    .info-badge:hover, .info-badge.active {
+      color: #000;
+      background: var(--accent, #38BDF8);
+      border-color: #FFF;
+      box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.6);
+      transform: scale(1.1);
+    }
+    #param-info-popover {
+      position: fixed;
+      z-index: 99999;
+      width: 265px;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateX(-4px) scale(0.97);
+      transition: opacity 0.14s ease, transform 0.14s ease;
+      background: rgba(7, 10, 18, 0.96);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-left: 3px solid var(--accent, #38BDF8);
+      border-radius: 6px;
+      padding: 9px 11px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.9);
+    }
+    #param-info-popover.visible {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
   </style>
 </head>
 <body class="h-screen w-screen flex flex-col overflow-hidden select-none relative" style="--accent: #38BDF8; --accent-rgb: 56, 189, 248;">
@@ -106,27 +155,43 @@
   <!-- TRANSLUCENT PLANETARY BACKGROUND -->
   <div id="bg-layer"></div>
 
-  <!-- HEADER -->
+  <!-- FLOATING PARAMETER INFO POPUP BUBBLE (NEVER CLIPPED BY SIDEBAR OVERFLOW) -->
+  <div id="param-info-popover" role="tooltip">
+    <div id="popover-title" class="mono text-[10px] font-bold uppercase tracking-wider mb-1" style="color: var(--accent, #38BDF8);"></div>
+    <p id="popover-desc" class="text-[11px] text-slate-200 leading-relaxed"></p>
+  </div>
+
+  <!-- HEADER (Uses Original LUMSTEM Emblem — Zero NASA Branding per Space Apps SI Rules) -->
   <header class="h-14 glass-panel border-b-0 flex items-center justify-between px-6 shrink-0 z-10">
-    <div class="flex items-center gap-4">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg" class="h-7" alt="NASA" />
+    <div class="flex items-center gap-3.5">
+      <!-- Original LUMSTEM Dual-Orbit Emblem SVG -->
+      <img src="logo.png" class="h-8 w-auto object-contain" alt="LUMSTEM Logo" />
+        <circle cx="18" cy="18" r="16" stroke="rgba(255,255,255,0.18)" stroke-width="1.2" fill="rgba(15,23,42,0.8)" />
+        <ellipse cx="18" cy="18" rx="14" ry="6" transform="rotate(-28 18 18)" stroke="#38BDF8" stroke-width="1.5" />
+        <ellipse cx="18" cy="18" rx="14" ry="6" transform="rotate(28 18 18)" stroke="#F97316" stroke-width="1.5" stroke-dasharray="3 2" />
+        <circle cx="18" cy="18" r="4.5" fill="#E2E8F0" />
+        <circle cx="29" cy="12" r="2" fill="#38BDF8" />
+        <circle cx="7" cy="12" r="2" fill="#F97316" />
+      </svg>
       <div class="h-5 w-px bg-white/20"></div>
-      <span class="mono text-sm font-bold tracking-widest text-slate-200">LUMSTEM</span>
+      <div>
+        <span class="mono text-sm font-bold tracking-widest text-slate-100 block leading-none">LUMSTEM</span>
+        <span class="mono text-[8.5px] text-slate-400 tracking-wider uppercase">Lunar &amp; Martian Surface To Earth Mapping</span>
+      </div>
     </div>
 
-    <!-- CENTERED TOGGLE (Clean Matte Finish, No Neon Glow) -->
+    <!-- CENTERED TOGGLE -->
     <div class="flex bg-black/60 p-1 rounded-lg border border-white/20 shadow-inner">
       <button id="btn-body-Moon" onclick="setBody('Moon')" class="mono text-xs px-8 py-1.5 rounded-md font-bold transition flex items-center gap-2">
-        🌕 MOON
+        MOON
       </button>
       <button id="btn-body-Mars" onclick="setBody('Mars')" class="mono text-xs px-8 py-1.5 rounded-md font-bold transition flex items-center gap-2">
-        🔴 MARS
+        MARS
       </button>
     </div>
 
-    <div class="mono text-[10px] text-slate-400 text-right">
-      <div>ANALOG ENGINE V1.0</div>
-      <div class="text-emerald-400">STATUS: ONLINE</div>
+    <div class="mono text-[9.5px] text-slate-400 text-right leading-tight">
+      <div class="text-[8.5px] text-slate-500" title="Uses Meta DINOv2 ViT embeddings & LLM-assisted UI code">SI-ASSISTED: DINOV2 + GEMINI</div>
     </div>
   </header>
 
@@ -149,14 +214,10 @@
 
       <div id="globe-wrapper" class="relative w-full h-[205px] shrink-0 rounded-lg overflow-hidden border border-white/20 bg-[#020408] shadow-inner mb-4 group">
         <div id="globe-canvas-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
-        <!-- Leader-line SVG connecting spread callout pills to their exact pin heads -->
         <svg id="globe-tethers-svg" class="absolute inset-0 w-full h-full pointer-events-none z-10"></svg>
-        <!-- Layer 1: Pin tips anchored strictly at exact (lat, lon) -->
         <div id="globe-pins-layer" class="absolute inset-0 pointer-events-none overflow-hidden z-20"></div>
-        <!-- Layer 2: Label callouts that separate cleanly when zoomed out -->
         <div id="globe-labels-layer" class="absolute inset-0 pointer-events-none overflow-hidden z-30"></div>
         
-        <!-- Subtle Coordinate & Interaction HUD -->
         <div id="globe-coords-hud" class="absolute bottom-1.5 left-2 mono text-[9px] text-slate-400 pointer-events-none bg-black/75 px-1.5 py-0.5 rounded border border-white/10 z-40">
           LAT -- / LON --
         </div>
@@ -165,40 +226,68 @@
         </div>
       </div>
 
-      <!-- SIMILARITY WEIGHTS -->
-      <div class="mono text-[10px] uppercase tracking-widest text-slate-300 mb-3 font-bold">Similarity Weights</div>
+      <!-- SIMILARITY WEIGHTS WITH INFO POPUP BUBBLES -->
+      <div class="flex items-center justify-between mb-3">
+        <span class="mono text-[10px] uppercase tracking-widest text-slate-300 font-bold">Similarity Weights</span>
+        <span class="mono text-[8.5px] text-slate-400">Hover ⓘ for info</span>
+      </div>
+
       <div class="space-y-3.5">
+        <!-- 1. Geomorphology -->
         <div>
           <div class="flex justify-between items-center text-[11px] mb-1 font-medium text-slate-200">
-            <span>Geomorphology</span>
+            <div class="flex items-center gap-1.5">
+              <span>Geomorphology</span>
+              <button type="button" class="info-badge" data-param="vis" aria-label="Geomorphology Info">i</button>
+            </div>
             <span id="val-vis" class="mono text-[11px] font-bold text-sky-400">0.35</span>
           </div>
           <input id="sl-vis" type="range" min="0" max="1" step="0.05" value="0.35" oninput="onSliderChange()" />
         </div>
+
+        <!-- 2. Slope -->
         <div>
           <div class="flex justify-between items-center text-[11px] mb-1 font-medium text-slate-200">
-            <span>Slope</span>
+            <div class="flex items-center gap-1.5">
+              <span>Slope</span>
+              <button type="button" class="info-badge" data-param="slp" aria-label="Slope Info">i</button>
+            </div>
             <span id="val-slp" class="mono text-[11px] font-bold text-sky-400">0.20</span>
           </div>
           <input id="sl-slp" type="range" min="0" max="1" step="0.05" value="0.20" oninput="onSliderChange()" />
         </div>
+
+        <!-- 3. Roughness -->
         <div>
           <div class="flex justify-between items-center text-[11px] mb-1 font-medium text-slate-200">
-            <span>Roughness</span>
+            <div class="flex items-center gap-1.5">
+              <span>Roughness</span>
+              <button type="button" class="info-badge" data-param="rgh" aria-label="Roughness Info">i</button>
+            </div>
             <span id="val-rgh" class="mono text-[11px] font-bold text-sky-400">0.15</span>
           </div>
           <input id="sl-rgh" type="range" min="0" max="1" step="0.05" value="0.15" oninput="onSliderChange()" />
         </div>
+
+        <!-- 4. Thermal -->
         <div>
           <div class="flex justify-between items-center text-[11px] mb-1 font-medium text-slate-200">
-            <span>Thermal</span>
+            <div class="flex items-center gap-1.5">
+              <span>Thermal</span>
+              <button type="button" class="info-badge" data-param="tmp" aria-label="Thermal Info">i</button>
+            </div>
             <span id="val-tmp" class="mono text-[11px] font-bold text-sky-400">0.15</span>
           </div>
           <input id="sl-tmp" type="range" min="0" max="1" step="0.05" value="0.15" oninput="onSliderChange()" />
         </div>
+
+        <!-- 5. Lithology -->
         <div>
           <div class="flex justify-between items-center text-[11px] mb-1 font-medium text-slate-200">
-            <span>Lithology</span>
+            <div class="flex items-center gap-1.5">
+              <span>Lithology</span>
+              <button type="button" class="info-badge" data-param="lit" aria-label="Lithology Info">i</button>
+            </div>
             <span id="val-lit" class="mono text-[11px] font-bold text-sky-400">0.15</span>
           </div>
           <input id="sl-lit" type="range" min="0" max="1" step="0.05" value="0.15" oninput="onSliderChange()" />
@@ -206,80 +295,138 @@
       </div>
       
       <div class="mt-auto pt-3">
-        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-white/10 transition border border-white/10 bg-black/40">
-          <input id="chk-discovery" type="checkbox" onchange="onSliderChange()" class="w-3.5 h-3.5 rounded bg-black/50 border-white/20 accent-sky-400" />
-          <span class="text-[10px] font-bold text-slate-200 uppercase tracking-wide">Discovery Mode</span>
-        </label>
+        <div class="flex items-center justify-between p-2 rounded hover:bg-white/10 transition border border-white/10 bg-black/40">
+          <label class="flex items-center gap-2 cursor-pointer flex-1">
+            <input id="chk-discovery" type="checkbox" onchange="onSliderChange()" class="w-3.5 h-3.5 rounded bg-black/50 border-white/20 accent-sky-400 cursor-pointer" />
+            <span class="text-[10px] font-bold text-slate-200 uppercase tracking-wide">Discovery Mode</span>
+          </label>
+          <button type="button" class="info-badge" data-param="disc" aria-label="Discovery Mode Info">i</button>
+        </div>
       </div>
     </aside>
 
-    <!-- CENTER & RIGHT: MAP, DOSSIER, AND TABLE (83%) -->
-    <main class="w-[83%] flex flex-col p-3 gap-3 overflow-hidden bg-transparent">
+    <!-- MAIN WORKSPACE (83%): TWO INDEPENDENT VERTICAL COLUMNS SO RIGHT GRAPH & DOSSIER FIT PERFECTLY -->
+    <main class="w-[83%] flex gap-3 p-3 overflow-hidden bg-transparent">
       
-      <!-- TOP ROW: MAP (66%) + DOSSIER (34%) -->
-      <div class="flex-[7] flex gap-3 overflow-hidden min-h-[380px]">
-        <!-- Satellite Map (Full-bleed, zero grey void) -->
-        <div class="w-[66%] border border-white/20 rounded-lg overflow-hidden relative shadow-2xl">
+      <!-- CENTER COLUMN (63% Width): SATELLITE MAP (TOP) + COMPACT LEADERBOARD (BOTTOM) -->
+      <div class="w-[63%] flex flex-col gap-3 overflow-hidden">
+        <!-- Satellite Map (62% Height) -->
+        <div class="flex-[62] border border-white/20 rounded-lg overflow-hidden relative shadow-2xl min-h-[300px]">
           <div id="map" class="absolute inset-0 w-full h-full"></div>
           <button onclick="resetWorldView()" class="absolute top-2.5 right-2.5 z-[1000] mono text-[10px] px-2.5 py-1 rounded bg-black/80 hover:bg-black text-slate-200 border border-white/20 shadow">
             🌐 Reset Global View
           </button>
         </div>
-        
-        <!-- Site Dossier -->
-        <div class="w-[34%] glass-panel rounded-lg p-4 flex flex-col overflow-y-auto shadow-2xl border border-white/20">
-          <div class="flex justify-between items-start mb-3 border-b border-white/10 pb-2.5">
-            <div>
-              <div class="mono text-[10px] text-sky-400 uppercase tracking-widest font-bold mb-0.5" id="dossier-rank">Analog Dossier</div>
-              <h2 id="dossier-title" class="text-sm font-bold text-white leading-tight">Select a Location</h2>
-            </div>
-            <div class="text-right shrink-0 ml-2">
-              <span class="mono text-[9px] text-slate-300 font-bold block">OVERALL MATCH</span>
-              <span id="dossier-score" class="mono text-xl font-bold text-emerald-400">--.-%</span>
-            </div>
-          </div>
-          
-          <div id="score-bars" class="space-y-2 mb-3"></div>
 
-          <div class="space-y-2.5 text-[11px] text-slate-200 flex-1">
-            <div class="bg-black/50 border border-white/10 rounded p-2.5 shadow-inner">
-              <h3 class="mono text-[9px] text-sky-400 uppercase mb-1 font-bold">Geological Rationale</h3>
-              <p id="spec-why" class="leading-relaxed"></p>
-            </div>
-            <div class="bg-black/50 border border-white/10 rounded p-2.5 space-y-1 shadow-inner">
-              <div><span class="text-slate-400">Lithology:</span> <span id="spec-lith" class="text-emerald-300 block font-medium"></span></div>
-              <div><span class="text-slate-400">Ice/Water:</span> <span id="spec-ice" class="block"></span></div>
-            </div>
-            <!-- Distinct Crimson Physical Constraints Box -->
-            <div class="bg-red-950/60 border border-red-500/50 rounded p-2.5 shadow-inner">
-              <h3 class="mono text-[9px] text-red-400 uppercase mb-1 font-bold">⚠️ Physical Constraints</h3>
-              <ul id="spec-breakdown" class="list-disc list-inside text-red-200/90 space-y-0.5"></ul>
-            </div>
+        <!-- Global Candidate Leaderboard (38% Height, Tile ID removed) -->
+        <div class="flex-[38] glass-panel rounded-lg p-3 flex flex-col shadow-2xl border border-white/20 overflow-hidden min-h-[190px]">
+          <div class="mono text-[10px] text-slate-200 uppercase tracking-widest font-bold mb-1.5">Global Candidate Leaderboard (Top 10 Regions)</div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th class="w-10">Rank</th>
+                  <th>Region Name</th>
+                  <th class="text-right text-emerald-400">Match</th>
+                  <th class="text-right">Geomorph</th>
+                  <th class="text-right">Slope</th>
+                  <th class="text-right">Roughness</th>
+                  <th class="text-right">Thermal</th>
+                  <th class="text-right">Lithology</th>
+                </tr>
+              </thead>
+              <tbody id="table-body" class="mono"></tbody>
+            </table>
           </div>
         </div>
       </div>
 
-      <!-- BOTTOM ROW: SYNCHRONIZED RANKING TABLE -->
-      <div class="flex-[3] glass-panel rounded-lg p-3 flex flex-col shadow-2xl min-h-[165px] border border-white/20">
-        <div class="mono text-[10px] text-slate-200 uppercase tracking-widest font-bold mb-1.5">Global Candidate Leaderboard (Top 10 Regions)</div>
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th class="w-12">Rank</th>
-                <th>Region Name</th>
-                <th>Tile ID</th>
-                <th class="text-right text-emerald-400">Match Score</th>
-                <th class="text-right">Geomorph</th>
-                <th class="text-right">Slope</th>
-                <th class="text-right">Roughness</th>
-                <th class="text-right">Thermal</th>
-                <th class="text-right">Lithology</th>
-              </tr>
-            </thead>
-            <tbody id="table-body" class="mono"></tbody>
-          </table>
+      <!-- RIGHT COLUMN (37% Width): ANALOG DOSSIER (52% Height) + LARGE EXPLAINABLE RADAR GRAPH (48% Height) -->
+      <div class="w-[37%] flex flex-col gap-3 overflow-hidden">
+        
+        <!-- Top-Right (52% Height): Analog Dossier -->
+        <div class="flex-[52] glass-panel rounded-lg p-3.5 flex flex-col overflow-y-auto shadow-2xl border border-white/20 min-h-[260px]">
+          <div class="flex justify-between items-start mb-2 border-b border-white/10 pb-1.5 shrink-0">
+            <div>
+              <div class="mono text-[9px] text-sky-400 uppercase tracking-widest font-bold" id="dossier-rank">Analog Dossier</div>
+              <h2 id="dossier-title" class="text-sm font-bold text-white leading-tight mt-0.5">Select a Location</h2>
+            </div>
+            <div class="text-right shrink-0 ml-2">
+              <span class="mono text-[8px] text-slate-300 font-bold block">OVERALL MATCH</span>
+              <span id="dossier-score" class="mono text-xl font-bold text-emerald-400 leading-none">--.-%</span>
+            </div>
+          </div>
+          
+          <div id="score-bars" class="space-y-1 mb-2 shrink-0"></div>
+
+          <div class="space-y-1.5 text-[10.5px] text-slate-200 flex-1 flex flex-col justify-between">
+            <div class="bg-black/50 border border-white/10 rounded p-2 shadow-inner">
+              <h3 class="mono text-[8.5px] text-sky-400 uppercase mb-0.5 font-bold">Geological Rationale</h3>
+              <p id="spec-why" class="leading-snug text-slate-200"></p>
+            </div>
+            <div class="bg-black/50 border border-white/10 rounded p-2 space-y-0.5 shadow-inner">
+              <div><span class="text-slate-400">Lithology:</span> <span id="spec-lith" class="text-emerald-300 font-medium"></span></div>
+              <div><span class="text-slate-400">Ice/Water:</span> <span id="spec-ice" class="text-slate-200"></span></div>
+            </div>
+            <div class="bg-red-950/60 border border-red-500/50 rounded p-2 shadow-inner">
+              <h3 class="mono text-[8.5px] text-red-400 uppercase mb-0.5 font-bold">⚠️ Physical Constraints</h3>
+              <ul id="spec-breakdown" class="list-disc list-inside text-red-200/90 space-y-0.5 text-[10px]"></ul>
+            </div>
+          </div>
         </div>
+
+        <!-- Bottom-Right (48% Height): Large Explainable Similarity Analysis Radar Graph -->
+        <div class="flex-[48] glass-panel rounded-lg p-3 flex flex-col shadow-2xl border border-white/20 overflow-hidden relative min-h-[250px]">
+          <div class="flex items-center justify-between mb-1 shrink-0">
+            <span class="mono text-[10px] text-slate-200 uppercase tracking-widest font-bold">Explainable Similarity Analysis</span>
+            <span id="radar-target-label" class="mono text-[9px] text-slate-400 truncate max-w-[155px]"></span>
+          </div>
+
+          <div class="flex-1 flex items-center justify-between min-h-0 gap-2">
+            <!-- Left 3-Item Legend (Includes White Verified Overlap Core Explanation) -->
+            <div class="flex flex-col gap-1.5 shrink-0 w-[124px]">
+              <!-- 1. Target Mission Profile -->
+              <div class="bg-black/60 border border-white/15 rounded px-2 py-1.5">
+                <div class="flex items-center gap-1.5">
+                  <span id="legend-weight-swatch" class="w-3 h-3 rounded-sm border border-sky-300 bg-sky-500/40 shrink-0"></span>
+                  <span class="mono text-[8.5px] text-slate-100 leading-tight font-semibold">Target Mission Profile</span>
+                </div>
+                <div class="mono text-[7.5px] text-slate-400 mt-0.5">User Slider Weights</div>
+              </div>
+
+              <!-- 2. Candidate Earth Site -->
+              <div class="bg-black/60 border border-white/15 rounded px-2 py-1.5">
+                <div class="flex items-center gap-1.5">
+                  <svg width="12" height="12" class="shrink-0 rounded-sm border border-rose-400">
+                    <defs>
+                      <pattern id="legendHatch" width="4" height="4" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+                        <line x1="0" y1="0" x2="0" y2="4" stroke="#F43F5E" stroke-width="1.5" />
+                      </pattern>
+                    </defs>
+                    <rect width="12" height="12" fill="url(#legendHatch)" />
+                  </svg>
+                  <span class="mono text-[8.5px] text-slate-100 leading-tight font-semibold">Candidate Earth Site</span>
+                </div>
+                <div id="radar-site-name" class="mono text-[7.5px] text-emerald-400 mt-0.5 truncate">Real Similarity</div>
+              </div>
+
+              <!-- 3. White Part: Verified Overlap Core -->
+              <div class="bg-black/60 border border-white/20 rounded px-2 py-1.5">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-3 h-3 rounded-sm border border-white bg-white/90 shrink-0 shadow-[0_0_6px_rgba(255,255,255,0.6)]"></span>
+                  <span class="mono text-[8.5px] text-white leading-tight font-semibold">Verified Overlap Core</span>
+                </div>
+                <div class="mono text-[7.5px] text-slate-300 mt-0.5">Where Site Meets Weight</div>
+              </div>
+            </div>
+
+            <!-- Right Expanded Interactive SVG Radar Graph -->
+            <div class="flex-1 h-full flex items-center justify-center min-w-0">
+              <svg id="explainable-radar-svg" viewBox="0 0 290 245" class="w-full h-full max-h-[245px] overflow-visible"></svg>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </main>
@@ -291,27 +438,101 @@
     let state = { body: "Moon", targetId: "shackleton_rim", inspectedTileId: null, weights: { vis: 0.35, slp: 0.20, rgh: 0.15, tmp: 0.15, lit: 0.15 }, hideFamous: false };
     let currentLatLngs = [];
 
+    // =========================================================================
+    // PARAMETER INFO POPUP BUBBLE DEFINITIONS & EVENT LOGIC
+    // =========================================================================
+    const PARAM_TOOLTIPS = {
+      vis: {
+        title: "Geomorphology (DINOv2)",
+        desc: "Evaluates landform structures and surface features (such as craters, rilles, or channels) to match the target body's visual and structural topography."
+      },
+      slp: {
+        title: "Slope (3D Steepness)",
+        desc: "Analyzes surface steepness and gradient angles to find terrestrial analogs that mimic the grade of planetary landing sites or volcanic slopes."
+      },
+      rgh: {
+        title: "Roughness (Terrain Ruggedness)",
+        desc: "Measures local surface irregularity and relief variation to identify terrain conditions important for rover mobility and navigation."
+      },
+      tmp: {
+        title: "Thermal (ΔT & Illumination)",
+        desc: "Assesses surface temperature variations and diurnal thermal swings to match the extreme heating and cooling profiles of lunar or Martian environments."
+      },
+      lit: {
+        title: "Lithology (Surface Material)",
+        desc: "Compares rock composition, mineralogy, and surface materials (such as basalt or regolith) to ensure geological and chemical similarity."
+      },
+      disc: {
+        title: "Discovery Mode",
+        desc: "Filters out well-known NASA training benchmarks (Atacama, Askja, Devon Island, Hawaii, Antarctica) to surface under-utilized planetary analogs."
+      }
+    };
+
+    const popoverEl = document.getElementById("param-info-popover");
+    const popoverTitle = document.getElementById("popover-title");
+    const popoverDesc = document.getElementById("popover-desc");
+    let activeBadge = null;
+
+    function showParamPopover(badgeEl) {
+      const key = badgeEl.getAttribute("data-param");
+      const info = PARAM_TOOLTIPS[key];
+      if (!info) return;
+
+      activeBadge = badgeEl;
+      document.querySelectorAll(".info-badge").forEach(b => b.classList.toggle("active", b === badgeEl));
+      popoverTitle.textContent = info.title;
+      popoverDesc.textContent = info.desc;
+      popoverEl.classList.add("visible");
+
+      const rect = badgeEl.getBoundingClientRect();
+      const popH = popoverEl.offsetHeight || 96;
+      let left = rect.right + 12;
+      let top = rect.top + rect.height / 2 - popH / 2;
+
+      top = Math.max(12, Math.min(window.innerHeight - popH - 12, top));
+      popoverEl.style.left = `${left}px`;
+      popoverEl.style.top = `${top}px`;
+    }
+
+    function hideParamPopover() {
+      if (activeBadge) {
+        activeBadge.classList.remove("active");
+        activeBadge = null;
+      }
+      popoverEl.classList.remove("visible");
+    }
+
+    document.querySelectorAll(".info-badge").forEach(badge => {
+      badge.addEventListener("mouseenter", () => showParamPopover(badge));
+      badge.addEventListener("mouseleave", () => hideParamPopover());
+      badge.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (activeBadge === badge && popoverEl.classList.contains("visible")) {
+          hideParamPopover();
+        } else {
+          showParamPopover(badge);
+        }
+      });
+    });
+
+    document.addEventListener("click", () => hideParamPopover());
+
     // Exact NASA_TARGETS coordinates from dataset pipeline
     const NASA_TARGETS_COORDS = {
-      // Moon: Shackleton Crater South Pole (NASA LRO LOLA: lat -89.5, lon 0.0)
-      shackleton_rim: { lat: -89.5, lon: 0.0 },
-      shackleton_psr: { lat: -89.8, lon: 180.0 }, // Opposite side of Shackleton Crater floor (-89.5°, 0.0°)
-      shackleton:     { lat: -89.5, lon: 0.0 },
-      // Moon: Apollo 15 Hadley Rille (NASA LRO LOLA + JAXA SELENE: lat 26.132, lon 3.633)
-      hadley_rille:   { lat: 26.132, lon: 3.633 },
-      apollo_15:      { lat: 26.132, lon: 3.633 },
-      hadley:         { lat: 26.132, lon: 3.633 },
-      // Mars: Jezero Crater Delta (NASA MGS MOLA / HRSC: lat 18.444, lon 77.451)
-      jezero_crater:  { lat: 18.444, lon: 77.451 },
-      jezero_delta:   { lat: 18.444, lon: 77.451 },
-      jezero:         { lat: 18.444, lon: 77.451 },
-      // Mars: Valles Marineris - Coprates Chasma (NASA MGS MOLA / HRSC: lat -13.50, lon -61.00)
+      shackleton_rim:   { lat: -89.5, lon: 0.0 },
+      shackleton_psr:   { lat: -89.8, lon: 180.0 },
+      shackleton:       { lat: -89.5, lon: 0.0 },
+      hadley_rille:     { lat: 26.132, lon: 3.633 },
+      apollo_15:        { lat: 26.132, lon: 3.633 },
+      hadley:           { lat: 26.132, lon: 3.633 },
+      jezero_crater:    { lat: 18.444, lon: 77.451 },
+      jezero_delta:     { lat: 18.444, lon: 77.451 },
+      jezero:           { lat: 18.444, lon: 77.451 },
       valles_marineris: { lat: -13.50, lon: -61.00 },
       coprates_chasma:  { lat: -13.50, lon: -61.00 },
       valles:           { lat: -13.50, lon: -61.00 },
-      // Mars: Arsia Mons Volcanic Flank & Lava Tubes (NASA MGS MOLA / HRSC: lat -9.20, lon -120.50)
-      arsia_mons:     { lat: -9.20, lon: -120.50 },
-      arsia:          { lat: -9.20, lon: -120.50 }
+      arsia_mons:       { lat: -9.20, lon: -120.50 },
+      arsia:            { lat: -9.20, lon: -120.50 }
     };
 
     function getTargetCoords(tid) {
@@ -319,7 +540,6 @@
       const key = tid.toLowerCase();
       const nameLower = (t.name || "").toLowerCase();
 
-      // 1. Check NASA_TARGETS exact mapping first
       if (key.includes("psr") || nameLower.includes("psr")) {
         return NASA_TARGETS_COORDS.shackleton_psr;
       }
@@ -333,7 +553,6 @@
         return NASA_TARGETS_COORDS[matchedKey];
       }
 
-      // 2. Fallback to explicit numeric fields on target object if present
       const rawLat = t.lat ?? t.latitude ?? t.center_lat ?? t.target_lat;
       const rawLon = t.lon ?? t.lng ?? t.longitude ?? t.center_lon ?? t.target_lon;
       if (rawLat !== undefined && rawLon !== undefined && !isNaN(Number(rawLat)) && !isNaN(Number(rawLon))) {
@@ -366,7 +585,6 @@
     renderer.outputEncoding = THREE.sRGBEncoding;
     globeContainer.appendChild(renderer.domElement);
 
-    // Subtle Starfield Background inside the 3D viewport
     const starGeo = new THREE.BufferGeometry();
     const starVertices = [];
     for (let i = 0; i < 450; i++) {
@@ -379,7 +597,6 @@
     const starMat = new THREE.PointsMaterial({ color: 0x94A3B8, size: 0.09, transparent: true, opacity: 0.7 });
     scene.add(new THREE.Points(starGeo, starMat));
 
-    // Balanced lighting so polar craters & all sides remain clearly legible
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.68);
     scene.add(ambientLight);
     const sunLight = new THREE.DirectionalLight(0xffffff, 0.72);
@@ -389,7 +606,6 @@
     rimLight.position.set(-4, -3, -3);
     scene.add(rimLight);
 
-    // High-density sphere geometry for smooth close-up zooming
     const planetGeo = new THREE.SphereGeometry(GLOBE_RADIUS, 96, 96);
     const planetMat = new THREE.MeshStandardMaterial({
       roughness: 0.88,
@@ -398,7 +614,6 @@
     const planetMesh = new THREE.Mesh(planetGeo, planetMat);
     scene.add(planetMesh);
 
-    // Subtle atmospheric horizon rim
     const haloGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 1.03, 64, 64);
     const haloMat = new THREE.MeshBasicMaterial({
       color: 0x38BDF8,
@@ -409,7 +624,6 @@
     const haloMesh = new THREE.Mesh(haloGeo, haloMat);
     scene.add(haloMesh);
 
-    // OrbitControls with dynamic zoom-proportional rotation speed
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
@@ -428,7 +642,6 @@
       controls.zoomSpeed = Math.max(0.32, 0.85 * Math.sqrt(zoomRatio));
     }
 
-    // HD Equirectangular Textures (Wikimedia Commons / SolarSystemScope & NASA)
     const textureLoader = new THREE.TextureLoader();
     textureLoader.setCrossOrigin("anonymous");
     const maxAniso = renderer.capabilities.getMaxAnisotropy();
@@ -486,7 +699,6 @@
       tryLoad(0);
     }
 
-    // Convert (lat, lon) in degrees to Three.js SphereGeometry 3D Cartesian coordinates
     function latLonToVector3(lat, lon, radius = GLOBE_RADIUS) {
       const phi = (90 - lat) * (Math.PI / 180);
       const theta = (lon + 180) * (Math.PI / 180);
@@ -496,7 +708,6 @@
       return new THREE.Vector3(x, y, z);
     }
 
-    // Smooth camera focus animation toward the selected target pin
     let cameraFlyAnim = null;
 
     function focusGlobeOnTarget(tid, instant = false) {
@@ -530,8 +741,6 @@
       cameraFlyAnim = null;
     });
 
-    // Build / Refresh the Google-Maps-style pins (fixed strictly to true coordinates)
-    // and separate callout label pills (which spread smoothly when zoomed out so labels never collide)
     let activeGlobePins = [];
 
     function rebuildGlobePins() {
@@ -555,7 +764,6 @@
         const pinW = isSelected ? 22 : 18;
         const pinH = isSelected ? 27 : 22;
 
-        // 1. Surface-locked Pin Marker (NEVER displaced from true lat/lon)
         const pinEl = document.createElement("div");
         pinEl.className = `globe-pin-tip ${isSelected ? "active" : ""}`;
         pinEl.title = `${t.name} (${lat.toFixed(3)}°, ${lon.toFixed(3)}°)`;
@@ -571,7 +779,6 @@
         });
         globePinsLayer.appendChild(pinEl);
 
-        // 2. Callout Label Pill (Sits above pin when far apart; fans out cleanly with leader line when close)
         const labelEl = document.createElement("div");
         labelEl.className = `globe-callout-pill ${isSelected ? "active" : ""}`;
         labelEl.textContent = shortName;
@@ -595,7 +802,6 @@
       });
     }
 
-    // Project 3D pins strictly onto their true surface coordinates, while decluttering ONLY the label pills
     function updateGlobePinsProjection() {
       const width = globeContainer.clientWidth;
       const height = globeContainer.clientHeight;
@@ -621,7 +827,6 @@
         const anchorY = (-projected.y * 0.5 + 0.5) * height;
         const limbFade = Math.min(1, Math.max(0.25, (dot - horizonCosThreshold) * 6));
 
-        // Lock the teardrop pin tip directly onto the exact (anchorX, anchorY) surface coordinate
         pin.pinEl.style.display = "block";
         pin.pinEl.style.left = `${anchorX}px`;
         pin.pinEl.style.top = `${anchorY}px`;
@@ -639,7 +844,6 @@
         });
       });
 
-      // Separate text callout pills if two labels overlap on screen
       if (visibleItems.length > 1) {
         visibleItems.forEach(item => {
           item.pin.labelEl.style.display = "block";
@@ -704,7 +908,6 @@
       globeTethersSvg.innerHTML = svgContent;
     }
 
-    // Resize observer so 3D canvas stays crisp on window resize
     new ResizeObserver(() => {
       const w = globeContainer.clientWidth;
       const h = globeContainer.clientHeight;
@@ -715,7 +918,6 @@
       }
     }).observe(globeContainer);
 
-    // Render loop
     function animateGlobe() {
       requestAnimationFrame(animateGlobe);
 
@@ -743,38 +945,156 @@
     animateGlobe();
 
     // =========================================================================
-    // LEAFLET SATELLITE MAP & ANALOG SCORING LOGIC (UNCHANGED)
+    // LEAFLET SATELLITE MAP & ANALOG SCORING LOGIC (BOUNDED SINGLE EARTH + FULL FIT)
     // =========================================================================
-    const worldBounds = L.latLngBounds(L.latLng(-82, -360), L.latLng(82, 360));
+    const worldBounds = L.latLngBounds(L.latLng(-85, -180), L.latLng(85, 180));
     const map = L.map("map", { 
-      center: [12, 15], 
-      zoom: 2, 
-      minZoom: 2,
+      center: [5, 0], 
+      zoom: 1.35, 
+      minZoom: 1.0,
       maxZoom: 11,
+      zoomSnap: 0.05,
+      zoomDelta: 0.5,
       maxBounds: worldBounds,
-      maxBoundsViscosity: 1.0,
-      worldCopyJump: true,
+      maxBoundsViscosity: 0.9,
+      worldCopyJump: false,
       zoomControl: false,
       attributionControl: false
     });
     
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 19
+      maxZoom: 19,
+      noWrap: true,
+      bounds: worldBounds
     }).addTo(map);
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
       maxZoom: 19,
-      opacity: 0.45
+      opacity: 0.45,
+      noWrap: true,
+      bounds: worldBounds
     }).addTo(map);
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
     let markersLayer = L.layerGroup().addTo(map);
 
+    new ResizeObserver(() => {
+      map.invalidateSize();
+    }).observe(document.getElementById("map"));
+
     function resetWorldView() {
+      map.stop();
+      map.invalidateSize();
       if (currentLatLngs.length > 0) {
-        map.fitBounds(L.latLngBounds(currentLatLngs), { padding: [28, 28], maxZoom: 3, animate: true, duration: 0.7 });
+        const bounds = L.latLngBounds(currentLatLngs);
+        map.fitBounds(bounds, {
+          padding: [28, 28],
+          maxZoom: 2.5,
+          animate: true,
+          duration: 0.7
+        });
       } else {
-        map.setView([12, 15], 2, { animate: true });
+        map.setView([5, 0], 1.35, { animate: true });
       }
+    }
+
+    // =========================================================================
+    // EXPLAINABLE SIMILARITY ANALYSIS RADAR GRAPH (EXPANDED R=94 + 3-ITEM LEGEND)
+    // =========================================================================
+    function renderExplainableRadar(selRow, isMoon) {
+      const svg = document.getElementById("explainable-radar-svg");
+      if (!svg || !selRow) return;
+
+      const cx = 148, cy = 128, R = 94;
+      const axes = [
+        { label: "Geomorph", weightPct: state.weights.vis * 100, simPct: selRow.vision_score },
+        { label: "Slope",    weightPct: state.weights.slp * 100, simPct: selRow.slope_score },
+        { label: "Roughness",weightPct: state.weights.rgh * 100, simPct: selRow.roughness_score },
+        { label: "Thermal",  weightPct: state.weights.tmp * 100, simPct: selRow.temp_swing_score },
+        { label: "Lithology",weightPct: state.weights.lit * 100, simPct: selRow.lithology_score }
+      ];
+      const N = axes.length;
+
+      const weightFill = isMoon ? "rgba(56, 189, 248, 0.35)" : "rgba(249, 115, 22, 0.35)";
+      const weightStroke = isMoon ? "#38BDF8" : "#F97316";
+      const simStroke = "#F43F5E";
+
+      const swatch = document.getElementById("legend-weight-swatch");
+      if (swatch) {
+        swatch.style.backgroundColor = weightFill;
+        swatch.style.borderColor = weightStroke;
+      }
+      document.getElementById("radar-site-name").textContent = selRow.region_name.split(",")[0];
+      const tName = (DATA.targets[state.targetId]?.name || "").split(": ")[1] || state.targetId;
+      document.getElementById("radar-target-label").textContent = tName.replace(/\s*\(.*?\)/g, "");
+
+      const pt = (i, pct) => {
+        const ang = (Math.PI * 2 * i) / N - Math.PI / 2;
+        const r = (Math.max(0, Math.min(100, pct)) / 100) * R;
+        return [cx + Math.cos(ang) * r, cy + Math.sin(ang) * r];
+      };
+
+      // 1. Concentric Polygon Rings (25%, 50%, 75%, 100%)
+      let ringsSvg = "";
+      [25, 50, 75, 100].forEach(lvl => {
+        const pts = axes.map((_, i) => pt(i, lvl).map(v => v.toFixed(1)).join(",")).join(" ");
+        ringsSvg += `<polygon points="${pts}" fill="none" stroke="rgba(148,163,184,${lvl === 100 ? '0.5' : '0.2'})" stroke-width="${lvl === 100 ? '1.2' : '0.85'}" />`;
+      });
+
+      // 2. Radial Spokes + Tick Marks + Vertex Labels
+      let axesSvg = "";
+      axes.forEach((ax, i) => {
+        const [xEnd, yEnd] = pt(i, 100);
+        axesSvg += `<line x1="${cx}" y1="${cy}" x2="${xEnd.toFixed(1)}" y2="${yEnd.toFixed(1)}" stroke="rgba(148,163,184,0.38)" stroke-width="0.95" />`;
+
+        const ang = (Math.PI * 2 * i) / N - Math.PI / 2;
+        const nx = -Math.sin(ang) * 3.0, ny = Math.cos(ang) * 3.0;
+        [25, 50, 75].forEach(lvl => {
+          const [tx, ty] = pt(i, lvl);
+          axesSvg += `<line x1="${(tx - nx).toFixed(1)}" y1="${(ty - ny).toFixed(1)}" x2="${(tx + nx).toFixed(1)}" y2="${(ty + ny).toFixed(1)}" stroke="rgba(148,163,184,0.5)" stroke-width="0.85" />`;
+        });
+
+        axesSvg += `<circle cx="${xEnd.toFixed(1)}" cy="${yEnd.toFixed(1)}" r="2.0" fill="#94A3B8" />`;
+
+        const [lx, ly] = pt(i, 118);
+        const anchor = Math.abs(lx - cx) < 12 ? "middle" : (lx > cx ? "start" : "end");
+        const dyOffset = ly < cy - 60 ? -3 : (ly > cy + 55 ? 7 : 3);
+        axesSvg += `
+          <text x="${lx.toFixed(1)}" y="${(ly + dyOffset).toFixed(1)}" text-anchor="${anchor}"
+                fill="#F1F5F9" font-family="JetBrains Mono, monospace" font-size="9.5" font-weight="600">
+            ${ax.label}
+          </text>
+        `;
+      });
+
+      // 3. Polygon Points: User Weights vs Real Candidate Similarity vs Verified Overlap Core
+      const weightPts = axes.map((a, i) => pt(i, a.weightPct).map(v => v.toFixed(1)).join(",")).join(" ");
+      const simPts = axes.map((a, i) => pt(i, a.simPct).map(v => v.toFixed(1)).join(",")).join(" ");
+      const overlapPts = axes.map((a, i) => pt(i, Math.min(a.weightPct, a.simPct)).map(v => v.toFixed(1)).join(",")).join(" ");
+
+      let verticesSvg = "";
+      axes.forEach((a, i) => {
+        const [wx, wy] = pt(i, a.weightPct);
+        const [sx, sy] = pt(i, a.simPct);
+        verticesSvg += `<circle cx="${wx.toFixed(1)}" cy="${wy.toFixed(1)}" r="2.6" fill="${weightStroke}" stroke="#000" stroke-width="0.9"><title>${a.label} Weight: ${a.weightPct.toFixed(0)}%</title></circle>`;
+        verticesSvg += `<circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="2.6" fill="${simStroke}" stroke="#FFF" stroke-width="0.9"><title>${a.label} Similarity: ${a.simPct.toFixed(1)}%</title></circle>`;
+      });
+
+      svg.innerHTML = `
+        <defs>
+          <pattern id="candidateHatch" width="5" height="5" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+            <line x1="0" y1="0" x2="0" y2="5" stroke="${simStroke}" stroke-width="1.5" stroke-opacity="0.78" />
+          </pattern>
+        </defs>
+        ${ringsSvg}
+        ${axesSvg}
+        <!-- Layer 1: Target Mission Profile (User Weights) -->
+        <polygon points="${weightPts}" fill="${weightFill}" stroke="${weightStroke}" stroke-width="1.8" />
+        <!-- Layer 2: Candidate Earth Site (Real Similarity Hatched Polygon) -->
+        <polygon points="${simPts}" fill="url(#candidateHatch)" stroke="${simStroke}" stroke-width="1.8" />
+        <!-- Layer 3: Verified Overlap Core (White Intersection) -->
+        <polygon points="${overlapPts}" fill="rgba(255, 255, 255, 0.90)" stroke="#FFFFFF" stroke-width="1.0" />
+        ${verticesSvg}
+      `;
     }
 
     function setBody(bodyName) {
@@ -899,8 +1219,7 @@
       });
 
       if (refitMap && currentLatLngs.length > 0) {
-        map.invalidateSize();
-        map.fitBounds(L.latLngBounds(currentLatLngs), { padding: [28, 28], maxZoom: 3, animate: true, duration: 0.8 });
+        resetWorldView();
       }
 
       // Update Dossier
@@ -914,20 +1233,19 @@
       document.getElementById("dossier-score").textContent = sel.final_score.toFixed(1) + "%";
       
       const bars = [["Geomorphology", sel.vision_score], ["Slope", sel.slope_score], ["Roughness", sel.roughness_score], ["Thermal", sel.temp_swing_score], ["Lithology", sel.lithology_score]];
-      document.getElementById("score-bars").innerHTML = bars.map(([l,v]) => `<div class="mb-1.5"><div class="flex justify-between text-[10px] mb-0.5 text-slate-300 font-bold tracking-wide"><span>${l}</span><span class="text-white">${v.toFixed(1)}%</span></div><div class="h-1.5 bg-white/15 rounded overflow-hidden"><div class="h-full rounded" style="width:${v}%;background:${accent};"></div></div></div>`).join("");
+      document.getElementById("score-bars").innerHTML = bars.map(([l,v]) => `<div class="mb-1"><div class="flex justify-between text-[9.5px] mb-0.5 text-slate-300 font-bold tracking-wide"><span>${l}</span><span class="text-white">${v.toFixed(1)}%</span></div><div class="h-1 bg-white/15 rounded overflow-hidden"><div class="h-full rounded" style="width:${v}%;background:${accent};"></div></div></div>`).join("");
 
       document.getElementById("spec-why").textContent = reg.why_chosen;
       document.getElementById("spec-lith").textContent = `${reg.lithology_name} (${sel.lithology_score.toFixed(0)}% match)`;
       document.getElementById("spec-ice").textContent = reg.ice_water;
       document.getElementById("spec-breakdown").innerHTML = `<li>Earth 1.0g vs ${tInfo.gravity_g}g alters traction.</li><li>Earth atmosphere caps ΔT at ${sel.raw_temp_swing.toFixed(0)}K vs ${sel.target_temp_swing.toFixed(0)}K on ${tInfo.body}.</li>`;
 
-      // Render Table
+      // Render Compact Table (Tile ID Removed)
       document.getElementById("table-body").innerHTML = topReg.map((r, idx) => {
         const isActive = r.tile_id === state.inspectedTileId;
         return `<tr id="row-${r.tile_id}" class="${isActive ? 'active-row' : ''} transition-colors" onclick="state.inspectedTileId='${r.tile_id}'; renderAll(false); map.flyTo([${r.center_lat}, ${r.center_lon}], 4, {duration: 0.6}); scrollToRow('${r.tile_id}');">
           <td class="font-bold text-xs">${idx + 1}</td>
-          <td class="text-slate-100 font-sans text-xs truncate max-w-[200px] font-semibold">${r.region_name.split(",")[0]}</td>
-          <td class="text-slate-400 text-[10px]">${r.tile_id}</td>
+          <td class="text-slate-100 font-sans text-xs truncate max-w-[180px] font-semibold">${r.region_name.split(",")[0]}</td>
           <td class="text-right font-bold text-emerald-400 text-xs">${r.final_score.toFixed(1)}%</td>
           <td class="text-right text-slate-300">${r.vision_score.toFixed(0)}%</td>
           <td class="text-right text-slate-300">${r.slope_score.toFixed(0)}%</td>
@@ -936,6 +1254,9 @@
           <td class="text-right text-slate-300">${r.lithology_score.toFixed(0)}%</td>
         </tr>`;
       }).join("");
+
+      // Render Expanded Explainable Similarity Radar Graph in Bottom-Right Panel
+      renderExplainableRadar(sel, isMoon);
     }
 
     setBody("Moon");

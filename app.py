@@ -213,7 +213,7 @@ def select_target(tid):
     st.session_state.inspected_tile_id = None
 
 # --- 4. SIDEBAR: WEIGHT SLIDERS & DISCOVERY MODE ---
-st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg", width=85)
+# st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg", width=85)
 st.sidebar.markdown("### LUMSTEM // TELEMETRY")
 st.sidebar.caption("Lunar & Martian Surface To Earth Mapping")
 
