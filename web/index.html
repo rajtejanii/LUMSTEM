@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LUMSTEM // Planetary Analog Mission Control</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #000; color: #E2E8F0; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+    
+    input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+    input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 3px; background: rgba(255,255,255,0.25); border-radius: 2px; }
+    input[type=range]::-webkit-slider-thumb { height: 14px; width: 14px; border-radius: 50%; background: var(--accent, #38BDF8); -webkit-appearance: none; margin-top: -5.5px; cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.7); }
+    
+    .tactical-pin {
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+      color: #000; border-radius: 50%; border: 2px solid #FFF;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.95); transition: transform 0.2s ease;
+    }
+    .tactical-pin:hover { transform: scale(1.18); z-index: 9999 !important; }
+
+    /* Frosted Glass Background Layer */
+    #bg-layer {
+      position: absolute; inset: 0; z-index: -1;
+      background-size: cover; background-position: center;
+      opacity: 0.55; transition: background-image 0.8s ease-in-out;
+      filter: contrast(1.1);
+    }
+
+    /* Darken & tint satellite map slightly so glowing markers pop */
+    .leaflet-container { background-color: #040B16 !important; }
+    .leaflet-tile-pane { filter: brightness(0.88) contrast(1.08) saturate(1.05); }
+    
+    /* Sleek Table Styling */
+    .table-container { overflow-y: auto; height: 100%; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.75rem; }
+    th { position: sticky; top: 0; background: rgba(5, 7, 12, 0.95); padding: 8px 12px; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; z-index: 10; border-bottom: 1px solid rgba(255,255,255,0.15); }
+    td { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    tr:hover td { background: rgba(255,255,255,0.12); cursor: pointer; }
+    tr.active-row td { background: rgba(var(--accent-rgb), 0.3) !important; color: #FFF; font-weight: bold; }
+    
+    .glass-panel { background: rgba(5, 5, 8, 0.68); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.12); }
+  </style>
+</head>
+<body class="h-screen w-screen flex flex-col overflow-hidden select-none relative" style="--accent: #38BDF8; --accent-rgb: 56, 189, 248;">
+
+  <!-- TRANSLUCENT PLANETARY BACKGROUND -->
+  <div id="bg-layer"></div>
+
+  <!-- HEADER -->
+  <header class="h-14 glass-panel border-b-0 flex items-center justify-between px-6 shrink-0 z-10">
+    <div class="flex items-center gap-4">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg" class="h-7" alt="NASA" />
+      <div class="h-5 w-px bg-white/20"></div>
+      <span class="mono text-sm font-bold tracking-widest text-slate-200">LUMSTEM</span>
+    </div>
+
+    <!-- CENTERED TOGGLE -->
+    <div class="flex bg-black/60 p-1 rounded-lg border border-white/20 shadow-inner">
+      <button id="btn-body-Moon" onclick="setBody('Moon')" class="mono text-xs px-8 py-1.5 rounded-md font-bold transition flex items-center gap-2">
+        🌕 MOON
+      </button>
+      <button id="btn-body-Mars" onclick="setBody('Mars')" class="mono text-xs px-8 py-1.5 rounded-md font-bold transition flex items-center gap-2">
+        🔴 MARS
+      </button>
+    </div>
+
+    <div class="mono text-[10px] text-slate-400 text-right">
+      <div>ANALOG ENGINE V1.0</div>
+      <div class="text-emerald-400">STATUS: ONLINE</div>
+    </div>
+  </header>
+
+  <!-- TARGET SITE SELECTOR -->
+  <div class="glass-panel border-y border-white/15 py-2 px-4 shrink-0 flex justify-center gap-4 z-10" id="target-buttons-row"></div>
+
+  <!-- MAIN LAYOUT -->
+  <div class="flex-1 flex overflow-hidden z-10">
+    
+    <!-- LEFT: SLIDERS (17%) -->
+    <aside class="w-[17%] min-w-[230px] glass-panel border-r-0 border-t-0 p-4 flex flex-col overflow-y-auto shadow-xl">
+      <div class="mono text-[10px] uppercase tracking-widest text-slate-300 mb-2.5 font-bold">1. Mission Presets</div>
+      <div class="flex flex-col gap-1.5 mb-6">
+        <button onclick="applyPreset(0.40, 0.30, 0.20, 0.05, 0.05)" class="py-1.5 border border-white/20 rounded hover:bg-white/10 mono text-[11px] bg-black/40 transition text-slate-200 hover:text-white">Rover Nav</button>
+        <button onclick="applyPreset(0.10, 0.25, 0.10, 0.20, 0.35)" class="py-1.5 border border-white/20 rounded hover:bg-white/10 mono text-[11px] bg-black/40 transition text-slate-200 hover:text-white">ISRU Drill</button>
+        <button onclick="applyPreset(0.20, 0.30, 0.30, 0.10, 0.10)" class="py-1.5 border border-white/20 rounded hover:bg-white/10 mono text-[11px] bg-black/40 transition text-slate-200 hover:text-white">Habitat Landing</button>
+      </div>
+
+      <div class="mono text-[10px] uppercase tracking-widest text-slate-300 mb-3 font-bold">2. Similarity Weights</div>
+      <div class="space-y-4">
+        <div>
+          <div class="flex justify-between items-center text-[11px] mb-1 font-medium text-slate-200">
+            <span>Geomorphology</span>
+            <span id="val-vis" class="mono text-[11px] font-bold text-sky-400">0.35</span>
+          </div>
+          <input id="sl-vis" type="range" min="0" max="1" step="0.05" value="0.35" oninput="onSliderChange()" />
+        </div>
+        <div>
+          <div class="flex justify-between items-center text-[11px] mb-1 font-medium text-slate-200">
+            <span>Slope</span>
+            <span id="val-slp" class="mono text-[11px] font-bold text-sky-400">0.20</span>
+          </div>
+          <input id="sl-slp" type="range" min="0" max="1" step="0.05" value="0.20" oninput="onSliderChange()" />
+        </div>
+        <div>
+          <div class="flex justify-between items-center text-[11px] mb-1 font-medium text-slate-200">
+            <span>Roughness</span>
+            <span id="val-rgh" class="mono text-[11px] font-bold text-sky-400">0.15</span>
+          </div>
+          <input id="sl-rgh" type="range" min="0" max="1" step="0.05" value="0.15" oninput="onSliderChange()" />
+        </div>
+        <div>
+          <div class="flex justify-between items-center text-[11px] mb-1 font-medium text-slate-200">
+            <span>Thermal</span>
+            <span id="val-tmp" class="mono text-[11px] font-bold text-sky-400">0.15</span>
+          </div>
+          <input id="sl-tmp" type="range" min="0" max="1" step="0.05" value="0.15" oninput="onSliderChange()" />
+        </div>
+        <div>
+          <div class="flex justify-between items-center text-[11px] mb-1 font-medium text-slate-200">
+            <span>Lithology</span>
+            <span id="val-lit" class="mono text-[11px] font-bold text-sky-400">0.15</span>
+          </div>
+          <input id="sl-lit" type="range" min="0" max="1" step="0.05" value="0.15" oninput="onSliderChange()" />
+        </div>
+      </div>
+      
+      <div class="mt-auto pt-4">
+        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-white/10 transition border border-white/10 bg-black/40">
+          <input id="chk-discovery" type="checkbox" onchange="onSliderChange()" class="w-3.5 h-3.5 rounded bg-black/50 border-white/20 accent-sky-400" />
+          <span class="text-[10px] font-bold text-slate-200 uppercase tracking-wide">Discovery Mode</span>
+        </label>
+      </div>
+    </aside>
+
+    <!-- CENTER & RIGHT: MAP, DOSSIER, AND TABLE (83%) -->
+    <main class="w-[83%] flex flex-col p-3 gap-3 overflow-hidden bg-transparent">
+      
+      <!-- TOP ROW: MAP (66%) + DOSSIER (34%) -->
+      <div class="flex-[7] flex gap-3 overflow-hidden min-h-[380px]">
+        <!-- Satellite Map (Full-bleed, zero grey void) -->
+        <div class="w-[66%] border border-white/20 rounded-lg overflow-hidden relative shadow-2xl">
+          <div id="map" class="absolute inset-0 w-full h-full"></div>
+          <button onclick="resetWorldView()" class="absolute top-2.5 right-2.5 z-[1000] mono text-[10px] px-2.5 py-1 rounded bg-black/80 hover:bg-black text-slate-200 border border-white/20 shadow">
+            🌐 Reset Global View
+          </button>
+        </div>
+        
+        <!-- Site Dossier -->
+        <div class="w-[34%] glass-panel rounded-lg p-4 flex flex-col overflow-y-auto shadow-2xl border border-white/20">
+          <div class="flex justify-between items-start mb-3 border-b border-white/10 pb-2.5">
+            <div>
+              <div class="mono text-[10px] text-sky-400 uppercase tracking-widest font-bold mb-0.5" id="dossier-rank">Analog Dossier</div>
+              <h2 id="dossier-title" class="text-sm font-bold text-white leading-tight drop-shadow-md">Select a Location</h2>
+            </div>
+            <div class="text-right shrink-0 ml-2">
+              <span class="mono text-[9px] text-slate-300 font-bold block">OVERALL MATCH</span>
+              <span id="dossier-score" class="mono text-xl font-bold text-emerald-400 drop-shadow-lg">--.-%</span>
+            </div>
+          </div>
+          
+          <div id="score-bars" class="space-y-2 mb-3"></div>
+
+          <div class="space-y-2.5 text-[11px] text-slate-200 flex-1">
+            <div class="bg-black/50 border border-white/10 rounded p-2.5 shadow-inner">
+              <h3 class="mono text-[9px] text-sky-400 uppercase mb-1 font-bold">Geological Rationale</h3>
+              <p id="spec-why" class="leading-relaxed"></p>
+            </div>
+            <div class="bg-black/50 border border-white/10 rounded p-2.5 space-y-1 shadow-inner">
+              <div><span class="text-slate-400">Lithology:</span> <span id="spec-lith" class="text-emerald-300 block font-medium"></span></div>
+              <div><span class="text-slate-400">Ice/Water:</span> <span id="spec-ice" class="block"></span></div>
+            </div>
+            <!-- Distinct Crimson Physical Constraints Box -->
+            <div class="bg-red-950/60 border border-red-500/50 rounded p-2.5 shadow-inner">
+              <h3 class="mono text-[9px] text-red-400 uppercase mb-1 font-bold">⚠️ Physical Constraints</h3>
+              <ul id="spec-breakdown" class="list-disc list-inside text-red-200/90 space-y-0.5"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM ROW: SYNCHRONIZED RANKING TABLE -->
+      <div class="flex-[3] glass-panel rounded-lg p-3 flex flex-col shadow-2xl min-h-[165px] border border-white/20">
+        <div class="mono text-[10px] text-slate-200 uppercase tracking-widest font-bold mb-1.5">Global Candidate Leaderboard (Top 10 Regions)</div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th class="w-12">Rank</th>
+                <th>Region Name</th>
+                <th>Tile ID</th>
+                <th class="text-right text-emerald-400">Match Score</th>
+                <th class="text-right">Geomorph</th>
+                <th class="text-right">Slope</th>
+                <th class="text-right">Thermal</th>
+                <th class="text-right">Lithology</th>
+              </tr>
+            </thead>
+            <tbody id="table-body" class="mono"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    const DATA = window.LUMSTEM_DATA;
+    let state = { body: "Moon", targetId: "shackleton_rim", inspectedTileId: null, weights: { vis: 0.35, slp: 0.20, rgh: 0.15, tmp: 0.15, lit: 0.15 }, hideFamous: false };
+    let currentLatLngs = [];
+
+    // Lock vertical bounds to [-82, 82] so camera NEVER shows polar grey void, while allowing horizontal fill
+    const worldBounds = L.latLngBounds(L.latLng(-82, -360), L.latLng(82, 360));
+    const map = L.map("map", { 
+      center: [12, 15], 
+      zoom: 2, 
+      minZoom: 2,
+      maxZoom: 11,
+      maxBounds: worldBounds,
+      maxBoundsViscosity: 1.0,
+      worldCopyJump: true,
+      zoomControl: false,
+      attributionControl: false
+    });
+    
+    // Free, API-Key-Free High-Res Esri Satellite Imagery + Subtle Borders Overlay
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19
+    }).addTo(map);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19,
+      opacity: 0.45
+    }).addTo(map);
+
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+    let markersLayer = L.layerGroup().addTo(map);
+
+    function resetWorldView() {
+      if (currentLatLngs.length > 0) {
+        map.fitBounds(L.latLngBounds(currentLatLngs), { padding: [28, 28], maxZoom: 3, animate: true, duration: 0.7 });
+      } else {
+        map.setView([12, 15], 2, { animate: true });
+      }
+    }
+
+    function setBody(bodyName) {
+      state.body = bodyName;
+      const isMoon = bodyName === "Moon";
+      
+      const accentHex = isMoon ? "#38BDF8" : "#F97316";
+      const accentRgb = isMoon ? "56, 189, 248" : "249, 115, 22";
+      document.body.style.setProperty("--accent", accentHex);
+      document.body.style.setProperty("--accent-rgb", accentRgb);
+      
+      const bgUrl = isMoon 
+        ? "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/1920px-FullMoon2010.jpg" 
+        : "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/OSIRIS_Mars_true_color.jpg/1920px-OSIRIS_Mars_true_color.jpg";
+      document.getElementById("bg-layer").style.backgroundImage = `url('${bgUrl}')`;
+      
+      document.getElementById("btn-body-Moon").className = isMoon ? "mono text-xs px-8 py-1.5 rounded-md font-bold bg-sky-500 text-black shadow-[0_0_25px_rgba(56,189,248,0.7)]" : "mono text-xs px-8 py-1.5 rounded-md font-bold text-slate-400 hover:text-white bg-transparent";
+      document.getElementById("btn-body-Mars").className = !isMoon ? "mono text-xs px-8 py-1.5 rounded-md font-bold bg-orange-500 text-black shadow-[0_0_25px_rgba(249,115,22,0.7)]" : "mono text-xs px-8 py-1.5 rounded-md font-bold text-slate-400 hover:text-white bg-transparent";
+
+      ['vis','slp','rgh','tmp','lit'].forEach(k => {
+        document.getElementById(`val-${k}`).className = `mono text-[11px] font-bold ${isMoon ? 'text-sky-400' : 'text-orange-400'}`;
+      });
+
+      state.targetId = Object.keys(DATA.targets).find(k => DATA.targets[k].body === bodyName);
+      state.inspectedTileId = null;
+      renderAll(true);
+    }
+
+    function setTarget(tid) {
+      state.targetId = tid;
+      state.inspectedTileId = null;
+      renderAll(true);
+    }
+
+    function applyPreset(v, s, r, t, l) {
+      document.getElementById("sl-vis").value = v; document.getElementById("sl-slp").value = s;
+      document.getElementById("sl-rgh").value = r; document.getElementById("sl-tmp").value = t; document.getElementById("sl-lit").value = l;
+      onSliderChange();
+    }
+
+    function onSliderChange() {
+      state.weights.vis = parseFloat(document.getElementById("sl-vis").value);
+      state.weights.slp = parseFloat(document.getElementById("sl-slp").value);
+      state.weights.rgh = parseFloat(document.getElementById("sl-rgh").value);
+      state.weights.tmp = parseFloat(document.getElementById("sl-tmp").value);
+      state.weights.lit = parseFloat(document.getElementById("sl-lit").value);
+      state.hideFamous = document.getElementById("chk-discovery").checked;
+
+      // Keep font size fixed at text-[11px]!
+      ['vis','slp','rgh','tmp','lit'].forEach(k => {
+        document.getElementById(`val-${k}`).textContent = state.weights[k].toFixed(2);
+        document.getElementById(`val-${k}`).className = `mono text-[11px] font-bold ${state.body === 'Moon' ? 'text-sky-400' : 'text-orange-400'}`;
+      });
+      renderAll(false);
+    }
+
+    function scrollToRow(tileId) {
+      const row = document.getElementById(`row-${tileId}`);
+      if (row) {
+        row.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+
+    function renderAll(refitMap = false) {
+      const isMoon = state.body === "Moon";
+      const accent = isMoon ? "#38BDF8" : "#F97316";
+
+      // Target Buttons
+      const bodyTargets = Object.entries(DATA.targets).filter(([_, v]) => v.body === state.body);
+      document.getElementById("target-buttons-row").innerHTML = bodyTargets.map(([tid, t]) => {
+        const active = tid === state.targetId;
+        const cls = active ? `bg-white/20 text-white border-${isMoon?'sky':'orange'}-400 shadow-[0_4px_15px_rgba(0,0,0,0.6)]` : "bg-black/30 text-slate-400 border-transparent hover:bg-white/10 hover:text-white";
+        return `<button onclick="setTarget('${tid}')" class="px-5 py-1.5 rounded-md border-b-2 font-bold text-xs transition ${cls}">${t.name.split(": ")[1] || t.name}</button>`;
+      }).join("");
+
+      // Filter and Score Data
+      const wSum = Object.values(state.weights).reduce((a,b)=>a+b, 0) || 1;
+      let rows = DATA.tiles.filter(r => r.target_id === state.targetId && (!state.hideFamous || !r.is_famous)).map(r => {
+        r.final_score = (state.weights.vis * r.vision_score + state.weights.slp * r.slope_score + state.weights.rgh * r.roughness_score + state.weights.tmp * r.temp_swing_score + state.weights.lit * r.lithology_score) / wSum;
+        return r;
+      }).sort((a, b) => b.final_score - a.final_score);
+      
+      if (!rows.length) return;
+
+      // Extract Top 10 Distinct Regions
+      const seen = new Set(); 
+      const topReg = [];
+      rows.forEach(r => { 
+        if(!seen.has(r.region_id) && topReg.length < 10) { 
+          seen.add(r.region_id); 
+          topReg.push(r); 
+        }
+      });
+
+      if (!state.inspectedTileId || !topReg.find(r => r.tile_id === state.inspectedTileId)) {
+        state.inspectedTileId = topReg[0].tile_id;
+      }
+
+      // Map Markers & Auto-Fit Bounds
+      markersLayer.clearLayers();
+      currentLatLngs = [];
+      
+      topReg.forEach((r, i) => {
+        const active = r.tile_id === state.inspectedTileId;
+        const bg = active ? "#10B981" : (i===0 ? accent : "#F8FAFC");
+        const icon = L.divIcon({ html: `<div class="tactical-pin" style="background:${bg};width:${active?32:24}px;height:${active?32:24}px;">${i+1}</div>`, className: "" });
+        
+        const marker = L.marker([r.center_lat, r.center_lon], {icon}).addTo(markersLayer);
+        marker.bindTooltip(`<b>#${i+1} ${r.region_name.split(",")[0]}</b> (${r.final_score.toFixed(1)}%)`, { direction: "top", offset: [0, -10] });
+        marker.on("click", () => { 
+          state.inspectedTileId = r.tile_id; 
+          renderAll(false);
+          map.flyTo([r.center_lat, r.center_lon], 4, {duration: 0.6});
+          scrollToRow(r.tile_id);
+        });
+        currentLatLngs.push([r.center_lat, r.center_lon]);
+      });
+
+      if (refitMap && currentLatLngs.length > 0) {
+        map.invalidateSize();
+        map.fitBounds(L.latLngBounds(currentLatLngs), { padding: [28, 28], maxZoom: 3, animate: true, duration: 0.8 });
+      }
+
+      // Update Dossier
+      const selIdx = topReg.findIndex(r => r.tile_id === state.inspectedTileId);
+      const sel = topReg[selIdx];
+      const reg = DATA.regions[sel.region_id];
+      const tInfo = DATA.targets[state.targetId];
+      
+      document.getElementById("dossier-rank").textContent = `ANALOG DOSSIER // GLOBAL RANK #${selIdx + 1}`;
+      document.getElementById("dossier-title").textContent = sel.region_name;
+      document.getElementById("dossier-score").textContent = sel.final_score.toFixed(1) + "%";
+      
+      const bars = [["Geomorphology", sel.vision_score], ["Slope", sel.slope_score], ["Roughness", sel.roughness_score], ["Thermal", sel.temp_swing_score], ["Lithology", sel.lithology_score]];
+      document.getElementById("score-bars").innerHTML = bars.map(([l,v]) => `<div class="mb-1.5"><div class="flex justify-between text-[10px] mb-0.5 text-slate-300 font-bold tracking-wide"><span>${l}</span><span class="text-white">${v.toFixed(1)}%</span></div><div class="h-1.5 bg-white/20 rounded shadow-inner"><div class="h-full rounded" style="width:${v}%;background:${accent};box-shadow: 0 0 10px ${accent};"></div></div></div>`).join("");
+
+      document.getElementById("spec-why").textContent = reg.why_chosen;
+      document.getElementById("spec-lith").textContent = `${reg.lithology_name} (${sel.lithology_score.toFixed(0)}% match)`;
+      document.getElementById("spec-ice").textContent = reg.ice_water;
+      document.getElementById("spec-breakdown").innerHTML = `<li>Earth 1.0g vs ${tInfo.gravity_g}g alters traction.</li><li>Earth atmosphere caps ΔT at ${sel.raw_temp_swing.toFixed(0)}K vs ${sel.target_temp_swing.toFixed(0)}K on ${tInfo.body}.</li>`;
+
+      // Render Table
+      document.getElementById("table-body").innerHTML = topReg.map((r, idx) => {
+        const isActive = r.tile_id === state.inspectedTileId;
+        return `<tr id="row-${r.tile_id}" class="${isActive ? 'active-row' : ''} transition-colors" onclick="state.inspectedTileId='${r.tile_id}'; renderAll(false); map.flyTo([${r.center_lat}, ${r.center_lon}], 4, {duration: 0.6}); scrollToRow('${r.tile_id}');">
+          <td class="font-bold text-xs">${idx + 1}</td>
+          <td class="text-slate-100 font-sans text-xs truncate max-w-[200px] font-semibold">${r.region_name.split(",")[0]}</td>
+          <td class="text-slate-400 text-[10px]">${r.tile_id}</td>
+          <td class="text-right font-bold text-emerald-400 text-xs">${r.final_score.toFixed(1)}%</td>
+          <td class="text-right text-slate-300">${r.vision_score.toFixed(0)}%</td>
+          <td class="text-right text-slate-300">${r.slope_score.toFixed(0)}%</td>
+          <td class="text-right text-slate-300">${r.temp_swing_score.toFixed(0)}%</td>
+          <td class="text-right text-slate-300">${r.lithology_score.toFixed(0)}%</td>
+        </tr>`;
+      }).join("");
+    }
+
+    setBody("Moon");
+  </script>
+</body>
+</html>
