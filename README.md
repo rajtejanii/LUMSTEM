@@ -6,7 +6,7 @@
 
 ---
 
-## 🚀 Instant Start for Judges (Zero External Downloads Required)
+## Instant Start for Judges (Zero External Downloads Required)
 
 All pre-computed NASA/ESA similarity scores and metadata (`data/tiles/metadata.csv`, `data/scores/vision.csv`, `data/scores/scalar.csv`, and the compiled frontend bundle `web/data.js`) are included directly in this repository so the application runs immediately.
 
@@ -22,7 +22,7 @@ Then open **`http://localhost:8080`** in your browser (or open `web/index.html` 
 
 ---
 
-## 🛰️ Official NASA & Partner Space Agency Data Sources
+## Official NASA & Partner Space Agency Data Sources
 
 Every parameter in LUMSTEM is derived from official NASA Planetary Data System (PDS), NASA Earthdata (`earthaccess`), and ESA Copernicus datasets:
 
@@ -36,21 +36,21 @@ Every parameter in LUMSTEM is derived from official NASA Planetary Data System (
 
 ---
 
-## 🎯 Planetary Reference Targets (3 Moon + 3 Mars)
+## Planetary Reference Targets (3 Moon + 3 Mars)
 
-### 🌕 Moon (Artemis & Apollo Reference Sites)
+### Moon (Artemis & Apollo Reference Sites)
 1. **Shackleton Crater Rim (`89.9°S`, NASA LRO LOLA 118 m/px):** Illuminated polar ridge receiving near-continuous grazing sunlight (1.5° solar elevation) adjacent to cryogenic shadows ($\Delta T = 185\text{ K}$).
 2. **Shackleton PSR Floor (`89.9°S`, NASA LRO LOLA 118 m/px):** Permanently Shadowed Region interior floor (~40–75 K, $\Delta T = 35\text{ K}$) trapping water-ice volatiles in anorthositic regolith.
 3. **Apollo 15 Hadley Rille (`26.13°N, 3.63°E`, LRO LOLA + Kaguya 59.2 m/px):** Sinuous volcanic lava channel cut into high-$\text{FeO}/\text{TiO}_2$ tholeiitic mare basalt ($\Delta T = 140\text{ K}$).
 
-### 🔴 Mars (Rover & Human Exploration Reference Sites)
+### Mars (Rover & Human Exploration Reference Sites)
 4. **Jezero Crater Delta (`18.44°N, 77.45°E`, MGS MOLA / HRSC 200 m/px):** Mars 2020 Perseverance landing site; ancient fluvio-lacustrine delta rich in Fe/Mg-smectite clays and carbonates ($\Delta T = 65\text{ K}$).
 5. **Valles Marineris — Coprates Chasma (`13.50°S, 61.00°W`, MGS MOLA / HRSC 200 m/px):** Steep tectonic canyon escarpment exposing layered flood basalt and sulfate bedrock ($\Delta T = 75\text{ K}$).
 6. **Arsia Mons (`9.20°S, 120.50°W`, MGS MOLA / HRSC 200 m/px):** Tharsis shield volcano flank featuring basaltic lava flows and collapse skylight pits for radiation-shielded habitats ($\Delta T = 85\text{ K}$).
 
 ---
 
-## 🖥️ Mission Control Interface Features (`web/index.html`)
+## Mission Control Interface Features (`web/index.html`)
 
 * **Celestial Body & Target Switcher:** Toggle between **Moon** and **Mars** and select any of the 6 reference landing sites with adaptive frosted-glass telemetry styling.
 * **Mission Presets & Real-Time Similarity Sliders:**
@@ -62,7 +62,7 @@ Every parameter in LUMSTEM is derived from official NASA Planetary Data System (
 
 ---
 
-## 🛠️ Full Backend Pipeline Architecture (Reproducibility)
+## Full Backend Pipeline Architecture (Reproducibility)
 
 If you wish to re-run the entire data ingestion, AI vision embedding, and physical scoring pipeline from scratch:
 
