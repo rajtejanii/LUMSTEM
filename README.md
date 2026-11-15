@@ -10,7 +10,7 @@
 
 Our official 30-second project demonstration is included directly in this repository:
 
-* **📹 Video Demonstration ($\le 30\text{s}$):** [Watch / Download Project Demo Video (LUMSTEM_Project_Demonstration.mp4)](./LUMSTEM_Project_Demonstration.mp4) *(or view our presentation slides if included in the root folder)*
+* **📹 Video Demonstration ($\le 30\text{s}$):** [Watch / Download Project Demo Video (LUMSTEM_Project_Demonstration.mp4)](./LUMSTEM_Project_Demonstration.mp4)
 
 ---
 
@@ -20,8 +20,8 @@ All **1,920 pre-computed tile-target evaluations** (`320` Earth tiles $\times$ `
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/<YOUR-GITHUB-USERNAME>/<YOUR-REPO-NAME>.git
-cd <YOUR-REPO-NAME>
+git clone https://github.com/rajtejanii/LUMSTEM.git
+cd LUMSTEM
 ```
 
 ### 2. Launch the Mission Control Web Application
@@ -35,13 +35,6 @@ Then open **[`http://localhost:8080`](http://localhost:8080)** in your browser (
 
 #### **Option B: One-Click Windows Launcher (`run_lumstem.bat`)**
 Double-click **`run_lumstem.bat`** in the root folder. It automatically detects `web/data.js`, starts the local server on port `8080`, and opens `http://localhost:8080` in your browser (or press `R` during the 2-second startup window to rebuild `web/data.js` from the CSVs).
-
-#### **Option C: Streamlit Scientific Telemetry Dashboard (`app.py`)**
-If you also want to explore our secondary Python/Plotly analytical dashboard:
-```bash
-pip install -r requirements.txt
-streamlit run app.py
-```
 
 ---
 
@@ -178,7 +171,7 @@ python build_web_data.py                 # Compiles CSVs & DEM grids into web/da
 In full compliance with the **2026 NASA Space Apps Challenge** rules regarding Super Intelligence (SI) tools:
 1. **Vision Transformer Embeddings (`src/step2_vision.py`):** Uses the open-source pre-trained **Meta DINOv2 Vision Transformer (`dinov2_vits14`)** via PyTorch Hub to compute 2D geomorphological similarity embeddings from normalized DEM tensors.
 2. **Code & Documentation Assistance:** Large Language Model (LLM) assistance (**Google Gemini**) was used to accelerate frontend HTML/CSS/JavaScript layout structuring, SVG radar chart rendering, and documentation formatting. All physical equations, dataset coordinates, and geological rationales were authored and verified by the team.
-3. **Demo Video Audio:** The 30-second demonstration video narration was generated via AI text-to-speech synthesis (**ElevenLabs**) and includes a visible SI watermark on the video.
+3. **Demo Video Audio:** The 30-second demonstration video narration was generated via SI text-to-speech synthesis (**ElevenLabs**) and includes a visible SI watermark on the video.
 4. **Zero NASA Branding:** No NASA logos, flags, or mission insignias are used in any SI-assisted code, UI, or media assets.
 
 ---
