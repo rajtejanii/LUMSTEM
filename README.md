@@ -8,16 +8,13 @@
 
 ## 🎬 Project Demonstration (In-Repository)
 
-Our official 30-second project demonstration and interface preview are included directly in this repository:
+Our official 30-second project demonstration is included directly in this repository:
 
-* **📹 Video Demonstration ($\le 30\text{s}$):** [Watch / Download Project Demo Video (`demo.mp4`)](./demo.mp4) *(or view our presentation slides if included in the root folder)*
-* **🖥️ Mission Control Interface Preview:**
-  ![LUMSTEM Mission Control Interface](./web/preview.png)
-  *(Note: If your demo video or screenshot has a different filename in the root directory, update the relative link above before committing.)*
+* **📹 Video Demonstration ($\le 30\text{s}$):** [Watch / Download Project Demo Video (LUMSTEM_Project_Demonstration.mp4)](./LUMSTEM_Project_Demonstration.mp4) *(or view our presentation slides if included in the root folder)*
 
 ---
 
-## ⚡ Quick Start (Clone & Launch in 10 Seconds)
+## ⚡ Quick Start
 
 All **1,920 pre-computed tile-target evaluations** (`320` Earth tiles $\times$ `6` planetary targets) are bundled directly in this repository (`data/tiles/metadata.csv`, `data/scores/vision.csv`, `data/scores/scalar.csv`, and `web/data.js`). **Zero external gigabyte downloads or API keys are required to run the Mission Control web app.**
 
@@ -135,12 +132,12 @@ Each of the **15 Earth analog regions** in `config.py` spans a **$0.4^\circ \tim
 
 ## 🎯 Official NASA Reference Landing Sites (3 Moon + 3 Mars)
 
-1. **🌕 Moon — Shackleton Crater Rim (`89.9°S, 0.0°E`, LRO LOLA 118 m/px):** Artemis III candidate polar ridge receiving near-continuous grazing sunlight ($1.5^\circ$ horizon angle) adjacent to cryogenic shadows ($\Delta T = 185\text{ K}$, Anorthositic Highland Breccia, $0.165g$).
-2. **🌕 Moon — Shackleton PSR Floor (`89.9°S`, LRO LOLA 118 m/px, 15.1 km offset):** Permanently Shadowed Region interior floor ($\sim 40\text{–}75\text{ K}$, $\Delta T = 35\text{ K}$) cold-trapping water-ice volatiles in anorthositic regolith ($0.165g$).
-3. **🌕 Moon — Apollo 15 Hadley Rille (`26.13°N, 3.63°E`, LRO LOLA + Kaguya 59.2 m/px):** Sinuous volcanic lava channel cut into high-$\text{FeO}/\text{TiO}_2$ tholeiitic mare basalt ($\Delta T = 140\text{ K}$, Mafic Index $0.95$, $0.165g$).
-4. **🔴 Mars — Jezero Crater Delta (`18.44°N, 77.45°E`, MGS MOLA / HRSC 200 m/px):** Mars 2020 Perseverance landing site; ancient fluvio-lacustrine delta fan rich in $\text{Fe/Mg}$-smectite clays and carbonates ($\Delta T = 65\text{ K}$, Mafic Index $0.65$, $0.38g$).
-5. **🔴 Mars — Valles Marineris, Coprates Chasma (`13.50°S, 61.00°W`, MGS MOLA / HRSC 200 m/px):** Steep tectonic canyon fault escarpment exposing kilometers of layered flood basalt and sulfate bedrock ($\Delta T = 75\text{ K}$, Mafic Index $0.84$, $0.38g$).
-6. **🔴 Mars — Arsia Mons (`9.20°S, 120.50°W`, MGS MOLA / HRSC 200 m/px):** Southernmost Tharsis shield volcano flank hosting high-altitude basaltic lava tubes and collapse skylights for radiation-shielded habitats ($\Delta T = 85\text{ K}$, Mafic Index $0.92$, $0.38g$).
+1. **Moon — Shackleton Crater Rim (`89.9°S, 0.0°E`, LRO LOLA 118 m/px):** Artemis III candidate polar ridge receiving near-continuous grazing sunlight ($1.5^\circ$ horizon angle) adjacent to cryogenic shadows ($\Delta T = 185\text{ K}$, Anorthositic Highland Breccia, $0.165g$).
+2. **Moon — Shackleton PSR Floor (`89.9°S`, LRO LOLA 118 m/px, 15.1 km offset):** Permanently Shadowed Region interior floor ($\sim 40\text{–}75\text{ K}$, $\Delta T = 35\text{ K}$) cold-trapping water-ice volatiles in anorthositic regolith ($0.165g$).
+3. **Moon — Apollo 15 Hadley Rille (`26.13°N, 3.63°E`, LRO LOLA + Kaguya 59.2 m/px):** Sinuous volcanic lava channel cut into high-$\text{FeO}/\text{TiO}_2$ tholeiitic mare basalt ($\Delta T = 140\text{ K}$, Mafic Index $0.95$, $0.165g$).
+4. **Mars — Jezero Crater Delta (`18.44°N, 77.45°E`, MGS MOLA / HRSC 200 m/px):** Mars 2020 Perseverance landing site; ancient fluvio-lacustrine delta fan rich in $\text{Fe/Mg}$-smectite clays and carbonates ($\Delta T = 65\text{ K}$, Mafic Index $0.65$, $0.38g$).
+5. **Mars — Valles Marineris, Coprates Chasma (`13.50°S, 61.00°W`, MGS MOLA / HRSC 200 m/px):** Steep tectonic canyon fault escarpment exposing kilometers of layered flood basalt and sulfate bedrock ($\Delta T = 75\text{ K}$, Mafic Index $0.84$, $0.38g$).
+6. **Mars — Arsia Mons (`9.20°S, 120.50°W`, MGS MOLA / HRSC 200 m/px):** Southernmost Tharsis shield volcano flank hosting high-altitude basaltic lava tubes and collapse skylights for radiation-shielded habitats ($\Delta T = 85\text{ K}$, Mafic Index $0.92$, $0.38g$).
 
 ---
 
@@ -176,7 +173,7 @@ python build_web_data.py                 # Compiles CSVs & DEM grids into web/da
 
 ---
 
-## 🤖 Super Intelligence (SI) & AI Tool Disclosure
+## 🤖 Super Intelligence (SI) Tool Disclosure
 
 In full compliance with the **2026 NASA Space Apps Challenge** rules regarding Super Intelligence (SI) tools:
 1. **Vision Transformer Embeddings (`src/step2_vision.py`):** Uses the open-source pre-trained **Meta DINOv2 Vision Transformer (`dinov2_vits14`)** via PyTorch Hub to compute 2D geomorphological similarity embeddings from normalized DEM tensors.
