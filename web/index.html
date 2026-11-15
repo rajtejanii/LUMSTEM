@@ -7,6 +7,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Three.js & OrbitControls for Interactive 3D Planetary Globe -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; background-color: #000; color: #E2E8F0; }
@@ -17,7 +20,7 @@
     
     input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
     input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 3px; background: rgba(255,255,255,0.25); border-radius: 2px; }
-    input[type=range]::-webkit-slider-thumb { height: 14px; width: 14px; border-radius: 50%; background: var(--accent, #38BDF8); -webkit-appearance: none; margin-top: -5.5px; cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.7); }
+    input[type=range]::-webkit-slider-thumb { height: 14px; width: 14px; border-radius: 50%; background: var(--accent, #38BDF8); -webkit-appearance: none; margin-top: -5.5px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.7); }
     
     .tactical-pin {
       display: flex; align-items: center; justify-content: center;
@@ -35,7 +38,7 @@
       filter: contrast(1.1);
     }
 
-    /* Darken & tint satellite map slightly so glowing markers pop */
+    /* Darken & tint satellite map slightly so markers pop */
     .leaflet-container { background-color: #040B16 !important; }
     .leaflet-tile-pane { filter: brightness(0.88) contrast(1.08) saturate(1.05); }
     
@@ -48,6 +51,54 @@
     tr.active-row td { background: rgba(var(--accent-rgb), 0.3) !important; color: #FFF; font-weight: bold; }
     
     .glass-panel { background: rgba(5, 5, 8, 0.68); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.12); }
+
+    /* 3D Globe Pin (Fixed strictly to true surface coordinate) */
+    .globe-pin-tip {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      cursor: pointer;
+      pointer-events: auto;
+      z-index: 20;
+      transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .globe-pin-tip:hover {
+      transform: translate(-50%, -105%) scale(1.18);
+      z-index: 45;
+    }
+    .globe-pin-tip.active {
+      z-index: 30;
+    }
+
+    /* Callout Label Pill (Independently decluttered when zoomed out so labels never stack) */
+    .globe-callout-pill {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      pointer-events: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      background: rgba(5, 7, 12, 0.94);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      color: #F8FAFC;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.9);
+      z-index: 35;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+    }
+    .globe-callout-pill:hover {
+      transform: translate(-50%, -50%) scale(1.06);
+      border-color: #FFF;
+      z-index: 50;
+    }
+    .globe-callout-pill.active {
+      background: var(--accent);
+      color: #000;
+      border-color: #FFF;
+      z-index: 40;
+    }
   </style>
 </head>
 <body class="h-screen w-screen flex flex-col overflow-hidden select-none relative" style="--accent: #38BDF8; --accent-rgb: 56, 189, 248;">
@@ -63,7 +114,7 @@
       <span class="mono text-sm font-bold tracking-widest text-slate-200">LUMSTEM</span>
     </div>
 
-    <!-- CENTERED TOGGLE -->
+    <!-- CENTERED TOGGLE (Clean Matte Finish, No Neon Glow) -->
     <div class="flex bg-black/60 p-1 rounded-lg border border-white/20 shadow-inner">
       <button id="btn-body-Moon" onclick="setBody('Moon')" class="mono text-xs px-8 py-1.5 rounded-md font-bold transition flex items-center gap-2">
         🌕 MOON
@@ -85,17 +136,38 @@
   <!-- MAIN LAYOUT -->
   <div class="flex-1 flex overflow-hidden z-10">
     
-    <!-- LEFT: SLIDERS (17%) -->
-    <aside class="w-[17%] min-w-[230px] glass-panel border-r-0 border-t-0 p-4 flex flex-col overflow-y-auto shadow-xl">
-      <div class="mono text-[10px] uppercase tracking-widest text-slate-300 mb-2.5 font-bold">1. Mission Presets</div>
-      <div class="flex flex-col gap-1.5 mb-6">
-        <button onclick="applyPreset(0.40, 0.30, 0.20, 0.05, 0.05)" class="py-1.5 border border-white/20 rounded hover:bg-white/10 mono text-[11px] bg-black/40 transition text-slate-200 hover:text-white">Rover Nav</button>
-        <button onclick="applyPreset(0.10, 0.25, 0.10, 0.20, 0.35)" class="py-1.5 border border-white/20 rounded hover:bg-white/10 mono text-[11px] bg-black/40 transition text-slate-200 hover:text-white">ISRU Drill</button>
-        <button onclick="applyPreset(0.20, 0.30, 0.30, 0.10, 0.10)" class="py-1.5 border border-white/20 rounded hover:bg-white/10 mono text-[11px] bg-black/40 transition text-slate-200 hover:text-white">Habitat Landing</button>
+    <!-- LEFT: 3D PLANETARY GLOBE & SLIDERS (17%) -->
+    <aside class="w-[17%] min-w-[240px] glass-panel border-r-0 border-t-0 p-3.5 flex flex-col overflow-y-auto shadow-xl">
+      
+      <!-- INTERACTIVE 3D PLANETARY TARGET GLOBE -->
+      <div class="flex items-center justify-between mb-1.5">
+        <div class="mono text-[10px] uppercase tracking-widest text-slate-300 font-bold" id="globe-header-title">Moon Globe</div>
+        <button onclick="focusGlobeOnCurrentTarget()" title="Center Globe on Selected Target" class="mono text-[9px] px-2 py-0.5 rounded bg-white/10 hover:bg-white/20 text-slate-200 border border-white/20 transition flex items-center gap-1">
+          ⌖ Re-Center
+        </button>
       </div>
 
-      <div class="mono text-[10px] uppercase tracking-widest text-slate-300 mb-3 font-bold">2. Similarity Weights</div>
-      <div class="space-y-4">
+      <div id="globe-wrapper" class="relative w-full h-[205px] shrink-0 rounded-lg overflow-hidden border border-white/20 bg-[#020408] shadow-inner mb-4 group">
+        <div id="globe-canvas-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
+        <!-- Leader-line SVG connecting spread callout pills to their exact pin heads -->
+        <svg id="globe-tethers-svg" class="absolute inset-0 w-full h-full pointer-events-none z-10"></svg>
+        <!-- Layer 1: Pin tips anchored strictly at exact (lat, lon) -->
+        <div id="globe-pins-layer" class="absolute inset-0 pointer-events-none overflow-hidden z-20"></div>
+        <!-- Layer 2: Label callouts that separate cleanly when zoomed out -->
+        <div id="globe-labels-layer" class="absolute inset-0 pointer-events-none overflow-hidden z-30"></div>
+        
+        <!-- Subtle Coordinate & Interaction HUD -->
+        <div id="globe-coords-hud" class="absolute bottom-1.5 left-2 mono text-[9px] text-slate-400 pointer-events-none bg-black/75 px-1.5 py-0.5 rounded border border-white/10 z-40">
+          LAT -- / LON --
+        </div>
+        <div class="absolute top-1.5 left-2 mono text-[8px] text-slate-400/90 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-black/75 px-1.5 py-0.5 rounded z-40">
+          Drag: Orbit • Scroll: Zoom
+        </div>
+      </div>
+
+      <!-- SIMILARITY WEIGHTS -->
+      <div class="mono text-[10px] uppercase tracking-widest text-slate-300 mb-3 font-bold">Similarity Weights</div>
+      <div class="space-y-3.5">
         <div>
           <div class="flex justify-between items-center text-[11px] mb-1 font-medium text-slate-200">
             <span>Geomorphology</span>
@@ -133,7 +205,7 @@
         </div>
       </div>
       
-      <div class="mt-auto pt-4">
+      <div class="mt-auto pt-3">
         <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-white/10 transition border border-white/10 bg-black/40">
           <input id="chk-discovery" type="checkbox" onchange="onSliderChange()" class="w-3.5 h-3.5 rounded bg-black/50 border-white/20 accent-sky-400" />
           <span class="text-[10px] font-bold text-slate-200 uppercase tracking-wide">Discovery Mode</span>
@@ -159,11 +231,11 @@
           <div class="flex justify-between items-start mb-3 border-b border-white/10 pb-2.5">
             <div>
               <div class="mono text-[10px] text-sky-400 uppercase tracking-widest font-bold mb-0.5" id="dossier-rank">Analog Dossier</div>
-              <h2 id="dossier-title" class="text-sm font-bold text-white leading-tight drop-shadow-md">Select a Location</h2>
+              <h2 id="dossier-title" class="text-sm font-bold text-white leading-tight">Select a Location</h2>
             </div>
             <div class="text-right shrink-0 ml-2">
               <span class="mono text-[9px] text-slate-300 font-bold block">OVERALL MATCH</span>
-              <span id="dossier-score" class="mono text-xl font-bold text-emerald-400 drop-shadow-lg">--.-%</span>
+              <span id="dossier-score" class="mono text-xl font-bold text-emerald-400">--.-%</span>
             </div>
           </div>
           
@@ -200,6 +272,7 @@
                 <th class="text-right text-emerald-400">Match Score</th>
                 <th class="text-right">Geomorph</th>
                 <th class="text-right">Slope</th>
+                <th class="text-right">Roughness</th>
                 <th class="text-right">Thermal</th>
                 <th class="text-right">Lithology</th>
               </tr>
@@ -218,7 +291,460 @@
     let state = { body: "Moon", targetId: "shackleton_rim", inspectedTileId: null, weights: { vis: 0.35, slp: 0.20, rgh: 0.15, tmp: 0.15, lit: 0.15 }, hideFamous: false };
     let currentLatLngs = [];
 
-    // Lock vertical bounds to [-82, 82] so camera NEVER shows polar grey void, while allowing horizontal fill
+    // Exact NASA_TARGETS coordinates from dataset pipeline
+    const NASA_TARGETS_COORDS = {
+      // Moon: Shackleton Crater South Pole (NASA LRO LOLA: lat -89.5, lon 0.0)
+      shackleton_rim: { lat: -89.5, lon: 0.0 },
+      shackleton_psr: { lat: -89.8, lon: 180.0 }, // Opposite side of Shackleton Crater floor (-89.5°, 0.0°)
+      shackleton:     { lat: -89.5, lon: 0.0 },
+      // Moon: Apollo 15 Hadley Rille (NASA LRO LOLA + JAXA SELENE: lat 26.132, lon 3.633)
+      hadley_rille:   { lat: 26.132, lon: 3.633 },
+      apollo_15:      { lat: 26.132, lon: 3.633 },
+      hadley:         { lat: 26.132, lon: 3.633 },
+      // Mars: Jezero Crater Delta (NASA MGS MOLA / HRSC: lat 18.444, lon 77.451)
+      jezero_crater:  { lat: 18.444, lon: 77.451 },
+      jezero_delta:   { lat: 18.444, lon: 77.451 },
+      jezero:         { lat: 18.444, lon: 77.451 },
+      // Mars: Valles Marineris - Coprates Chasma (NASA MGS MOLA / HRSC: lat -13.50, lon -61.00)
+      valles_marineris: { lat: -13.50, lon: -61.00 },
+      coprates_chasma:  { lat: -13.50, lon: -61.00 },
+      valles:           { lat: -13.50, lon: -61.00 },
+      // Mars: Arsia Mons Volcanic Flank & Lava Tubes (NASA MGS MOLA / HRSC: lat -9.20, lon -120.50)
+      arsia_mons:     { lat: -9.20, lon: -120.50 },
+      arsia:          { lat: -9.20, lon: -120.50 }
+    };
+
+    function getTargetCoords(tid) {
+      const t = DATA.targets[tid] || {};
+      const key = tid.toLowerCase();
+      const nameLower = (t.name || "").toLowerCase();
+
+      // 1. Check NASA_TARGETS exact mapping first
+      if (key.includes("psr") || nameLower.includes("psr")) {
+        return NASA_TARGETS_COORDS.shackleton_psr;
+      }
+      if (NASA_TARGETS_COORDS[key]) {
+        return NASA_TARGETS_COORDS[key];
+      }
+      const matchedKey = Object.keys(NASA_TARGETS_COORDS).find(
+        k => key.includes(k) || nameLower.includes(k.replace(/_/g, " "))
+      );
+      if (matchedKey) {
+        return NASA_TARGETS_COORDS[matchedKey];
+      }
+
+      // 2. Fallback to explicit numeric fields on target object if present
+      const rawLat = t.lat ?? t.latitude ?? t.center_lat ?? t.target_lat;
+      const rawLon = t.lon ?? t.lng ?? t.longitude ?? t.center_lon ?? t.target_lon;
+      if (rawLat !== undefined && rawLon !== undefined && !isNaN(Number(rawLat)) && !isNaN(Number(rawLon))) {
+        return { lat: Number(rawLat), lon: Number(rawLon) };
+      }
+
+      return { lat: 0, lon: 0 };
+    }
+
+    // =========================================================================
+    // 3D PLANETARY GLOBE ENGINE (THREE.JS + TRUE-ANCHOR PINS & CALLOUT LABELS)
+    // =========================================================================
+    const GLOBE_RADIUS = 1.0;
+    const MIN_CAM_DIST = 1.24;
+    const DEFAULT_CAM_DIST = 2.95;
+    const MAX_CAM_DIST = 4.6;
+
+    const globeContainer = document.getElementById("globe-canvas-container");
+    const globePinsLayer = document.getElementById("globe-pins-layer");
+    const globeLabelsLayer = document.getElementById("globe-labels-layer");
+    const globeTethersSvg = document.getElementById("globe-tethers-svg");
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(40, globeContainer.clientWidth / globeContainer.clientHeight, 0.05, 100);
+    camera.position.set(0, 0, DEFAULT_CAM_DIST);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(globeContainer.clientWidth, globeContainer.clientHeight);
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    globeContainer.appendChild(renderer.domElement);
+
+    // Subtle Starfield Background inside the 3D viewport
+    const starGeo = new THREE.BufferGeometry();
+    const starVertices = [];
+    for (let i = 0; i < 450; i++) {
+      const r = 18 + Math.random() * 20;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      starVertices.push(r * Math.sin(phi) * Math.cos(theta), r * Math.cos(phi), r * Math.sin(phi) * Math.sin(theta));
+    }
+    starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+    const starMat = new THREE.PointsMaterial({ color: 0x94A3B8, size: 0.09, transparent: true, opacity: 0.7 });
+    scene.add(new THREE.Points(starGeo, starMat));
+
+    // Balanced lighting so polar craters & all sides remain clearly legible
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.68);
+    scene.add(ambientLight);
+    const sunLight = new THREE.DirectionalLight(0xffffff, 0.72);
+    sunLight.position.set(4, 2.5, 5);
+    scene.add(sunLight);
+    const rimLight = new THREE.DirectionalLight(0x93C5FD, 0.22);
+    rimLight.position.set(-4, -3, -3);
+    scene.add(rimLight);
+
+    // High-density sphere geometry for smooth close-up zooming
+    const planetGeo = new THREE.SphereGeometry(GLOBE_RADIUS, 96, 96);
+    const planetMat = new THREE.MeshStandardMaterial({
+      roughness: 0.88,
+      metalness: 0.04
+    });
+    const planetMesh = new THREE.Mesh(planetGeo, planetMat);
+    scene.add(planetMesh);
+
+    // Subtle atmospheric horizon rim
+    const haloGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 1.03, 64, 64);
+    const haloMat = new THREE.MeshBasicMaterial({
+      color: 0x38BDF8,
+      transparent: true,
+      opacity: 0.06,
+      side: THREE.BackSide
+    });
+    const haloMesh = new THREE.Mesh(haloGeo, haloMat);
+    scene.add(haloMesh);
+
+    // OrbitControls with dynamic zoom-proportional rotation speed
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.enablePan = false;
+    controls.minDistance = MIN_CAM_DIST;
+    controls.maxDistance = MAX_CAM_DIST;
+    controls.rotateSpeed = 0.75;
+    controls.zoomSpeed = 0.8;
+
+    function updateZoomProportionalSensitivity() {
+      const dist = camera.position.length();
+      const surfaceAltitude = Math.max(0.06, dist - GLOBE_RADIUS);
+      const baseAltitude = DEFAULT_CAM_DIST - GLOBE_RADIUS;
+      const zoomRatio = Math.min(1.25, Math.max(0.07, surfaceAltitude / baseAltitude));
+      controls.rotateSpeed = 0.75 * zoomRatio;
+      controls.zoomSpeed = Math.max(0.32, 0.85 * Math.sqrt(zoomRatio));
+    }
+
+    // HD Equirectangular Textures (Wikimedia Commons / SolarSystemScope & NASA)
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.setCrossOrigin("anonymous");
+    const maxAniso = renderer.capabilities.getMaxAnisotropy();
+
+    const TEXTURE_URLS = {
+      Moon: [
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Solarsystemscope_texture_2k_moon.jpg/2048px-Solarsystemscope_texture_2k_moon.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/2/26/Solarsystemscope_texture_2k_moon.jpg"
+      ],
+      Mars: [
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Solarsystemscope_texture_2k_mars.jpg/2048px-Solarsystemscope_texture_2k_mars.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/4/46/Solarsystemscope_texture_2k_mars.jpg"
+      ]
+    };
+
+    const loadedTextures = {};
+
+    function applyGlobeTexture(bodyName) {
+      if (loadedTextures[bodyName]) {
+        planetMat.map = loadedTextures[bodyName];
+        planetMat.bumpMap = loadedTextures[bodyName];
+        planetMat.bumpScale = bodyName === "Moon" ? 0.015 : 0.018;
+        planetMat.needsUpdate = true;
+        return;
+      }
+
+      const fallbackCanvas = document.createElement("canvas");
+      fallbackCanvas.width = 512; fallbackCanvas.height = 256;
+      const ctx = fallbackCanvas.getContext("2d");
+      ctx.fillStyle = bodyName === "Moon" ? "#64748B" : "#9A3412";
+      ctx.fillRect(0, 0, 512, 256);
+      planetMat.map = new THREE.CanvasTexture(fallbackCanvas);
+      planetMat.needsUpdate = true;
+
+      const urls = TEXTURE_URLS[bodyName];
+      const tryLoad = (idx) => {
+        if (idx >= urls.length) return;
+        textureLoader.load(
+          urls[idx],
+          (tex) => {
+            tex.encoding = THREE.sRGBEncoding;
+            tex.anisotropy = maxAniso;
+            loadedTextures[bodyName] = tex;
+            if (state.body === bodyName) {
+              planetMat.map = tex;
+              planetMat.bumpMap = tex;
+              planetMat.bumpScale = bodyName === "Moon" ? 0.015 : 0.018;
+              planetMat.needsUpdate = true;
+            }
+          },
+          undefined,
+          () => tryLoad(idx + 1)
+        );
+      };
+      tryLoad(0);
+    }
+
+    // Convert (lat, lon) in degrees to Three.js SphereGeometry 3D Cartesian coordinates
+    function latLonToVector3(lat, lon, radius = GLOBE_RADIUS) {
+      const phi = (90 - lat) * (Math.PI / 180);
+      const theta = (lon + 180) * (Math.PI / 180);
+      const x = -radius * Math.sin(phi) * Math.cos(theta);
+      const y = radius * Math.cos(phi);
+      const z = radius * Math.sin(phi) * Math.sin(theta);
+      return new THREE.Vector3(x, y, z);
+    }
+
+    // Smooth camera focus animation toward the selected target pin
+    let cameraFlyAnim = null;
+
+    function focusGlobeOnTarget(tid, instant = false) {
+      const { lat, lon } = getTargetCoords(tid);
+      const surfaceNormal = latLonToVector3(lat, lon, 1.0).normalize();
+      const currentDist = Math.min(Math.max(camera.position.length(), 2.2), 3.0);
+      const targetPos = surfaceNormal.clone().multiplyScalar(instant ? DEFAULT_CAM_DIST : currentDist);
+
+      document.getElementById("globe-coords-hud").textContent =
+        `LAT ${lat >= 0 ? '+' : ''}${lat.toFixed(2)}° / LON ${lon >= 0 ? '+' : ''}${lon.toFixed(2)}°`;
+
+      if (instant) {
+        camera.position.copy(targetPos);
+        controls.target.set(0, 0, 0);
+        controls.update();
+        cameraFlyAnim = null;
+      } else {
+        cameraFlyAnim = {
+          startPos: camera.position.clone(),
+          endPos: targetPos,
+          progress: 0
+        };
+      }
+    }
+
+    function focusGlobeOnCurrentTarget() {
+      focusGlobeOnTarget(state.targetId, false);
+    }
+
+    controls.addEventListener("start", () => {
+      cameraFlyAnim = null;
+    });
+
+    // Build / Refresh the Google-Maps-style pins (fixed strictly to true coordinates)
+    // and separate callout label pills (which spread smoothly when zoomed out so labels never collide)
+    let activeGlobePins = [];
+
+    function rebuildGlobePins() {
+      globePinsLayer.innerHTML = "";
+      globeLabelsLayer.innerHTML = "";
+      globeTethersSvg.innerHTML = "";
+      activeGlobePins = [];
+
+      const isMoon = state.body === "Moon";
+      const accent = isMoon ? "#38BDF8" : "#F97316";
+      const bodyTargets = Object.entries(DATA.targets).filter(([_, v]) => v.body === state.body);
+
+      bodyTargets.forEach(([tid, t]) => {
+        const isSelected = tid === state.targetId;
+        const shortName = (t.name.split(": ")[1] || t.name).replace(/\s*\(.*?\)/g, "");
+        const { lat, lon } = getTargetCoords(tid);
+        const pos3D = latLonToVector3(lat, lon, GLOBE_RADIUS);
+
+        const pinColor = isSelected ? accent : "#F8FAFC";
+        const innerDot = isSelected ? "#000000" : "#0F172A";
+        const pinW = isSelected ? 22 : 18;
+        const pinH = isSelected ? 27 : 22;
+
+        // 1. Surface-locked Pin Marker (NEVER displaced from true lat/lon)
+        const pinEl = document.createElement("div");
+        pinEl.className = `globe-pin-tip ${isSelected ? "active" : ""}`;
+        pinEl.title = `${t.name} (${lat.toFixed(3)}°, ${lon.toFixed(3)}°)`;
+        pinEl.innerHTML = `
+          <svg width="${pinW}" height="${pinH}" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.95));">
+            <path d="M12 1C6.48 1 2 5.48 2 11C2 18.5 12 29 12 29C12 29 22 18.5 22 11C22 5.48 17.52 1 12 1Z" fill="${pinColor}" stroke="#05070C" stroke-width="2"/>
+            <circle cx="12" cy="11" r="4" fill="${innerDot}"/>
+          </svg>
+        `;
+        pinEl.addEventListener("click", (e) => {
+          e.stopPropagation();
+          setTarget(tid);
+        });
+        globePinsLayer.appendChild(pinEl);
+
+        // 2. Callout Label Pill (Sits above pin when far apart; fans out cleanly with leader line when close)
+        const labelEl = document.createElement("div");
+        labelEl.className = `globe-callout-pill ${isSelected ? "active" : ""}`;
+        labelEl.textContent = shortName;
+        labelEl.title = `${t.name} (${lat.toFixed(3)}°, ${lon.toFixed(3)}°)`;
+        labelEl.addEventListener("click", (e) => {
+          e.stopPropagation();
+          setTarget(tid);
+        });
+        globeLabelsLayer.appendChild(labelEl);
+
+        activeGlobePins.push({
+          tid,
+          isSelected,
+          pinEl,
+          labelEl,
+          pinH,
+          pos3D,
+          normal: pos3D.clone().normalize(),
+          accentColor: pinColor
+        });
+      });
+    }
+
+    // Project 3D pins strictly onto their true surface coordinates, while decluttering ONLY the label pills
+    function updateGlobePinsProjection() {
+      const width = globeContainer.clientWidth;
+      const height = globeContainer.clientHeight;
+      if (!width || !height) return;
+
+      const camPos = camera.position;
+      const camDist = camPos.length();
+      const horizonCosThreshold = (GLOBE_RADIUS / camDist) - 0.02;
+      const camDir = camPos.clone().normalize();
+
+      const visibleItems = [];
+
+      activeGlobePins.forEach((pin) => {
+        const dot = pin.normal.dot(camDir);
+        if (dot < horizonCosThreshold) {
+          pin.pinEl.style.display = "none";
+          pin.labelEl.style.display = "none";
+          return;
+        }
+
+        const projected = pin.pos3D.clone().project(camera);
+        const anchorX = (projected.x * 0.5 + 0.5) * width;
+        const anchorY = (-projected.y * 0.5 + 0.5) * height;
+        const limbFade = Math.min(1, Math.max(0.25, (dot - horizonCosThreshold) * 6));
+
+        // Lock the teardrop pin tip directly onto the exact (anchorX, anchorY) surface coordinate
+        pin.pinEl.style.display = "block";
+        pin.pinEl.style.left = `${anchorX}px`;
+        pin.pinEl.style.top = `${anchorY}px`;
+        pin.pinEl.style.opacity = limbFade.toFixed(2);
+
+        const headY = anchorY - pin.pinH;
+        visibleItems.push({
+          pin,
+          anchorX,
+          anchorY,
+          headY,
+          labelX: anchorX,
+          labelY: headY - 12,
+          limbFade
+        });
+      });
+
+      // Separate text callout pills if two labels overlap on screen
+      if (visibleItems.length > 1) {
+        visibleItems.forEach(item => {
+          item.pin.labelEl.style.display = "block";
+          item.halfW = Math.max(36, (item.pin.labelEl.offsetWidth || 84) * 0.5 + 4);
+          item.halfH = 12;
+        });
+
+        const sorted = [...visibleItems].sort((a, b) => a.anchorY - b.anchorY || a.anchorX - b.anchorX);
+
+        for (let iter = 0; iter < 6; iter++) {
+          for (let i = 0; i < sorted.length; i++) {
+            for (let j = i + 1; j < sorted.length; j++) {
+              const upper = sorted[i];
+              const lower = sorted[j];
+
+              const dx = lower.labelX - upper.labelX;
+              const dy = lower.labelY - upper.labelY;
+              const reqX = upper.halfW + lower.halfW;
+              const reqY = upper.halfH + lower.halfH + 4;
+
+              const overlapX = reqX - Math.abs(dx);
+              const overlapY = reqY - Math.abs(dy);
+
+              if (overlapX > 0 && overlapY > 0) {
+                const pushY = overlapY * 0.6;
+                upper.labelY -= pushY;
+                lower.labelY += pushY + 6;
+
+                const horizDir = dx === 0 ? 1 : Math.sign(dx);
+                upper.labelX -= horizDir * 8;
+                lower.labelX += horizDir * 8;
+              }
+            }
+          }
+        }
+      }
+
+      let svgContent = "";
+
+      visibleItems.forEach((item) => {
+        const halfW = item.halfW || 44;
+        item.labelX = Math.min(Math.max(item.labelX, halfW + 4), width - halfW - 4);
+        item.labelY = Math.min(Math.max(item.labelY, 14), height - 24);
+
+        item.pin.labelEl.style.display = "block";
+        item.pin.labelEl.style.left = `${item.labelX}px`;
+        item.pin.labelEl.style.top = `${item.labelY}px`;
+        item.pin.labelEl.style.opacity = item.limbFade.toFixed(2);
+
+        const targetConnectY = item.labelY > item.anchorY ? item.anchorY : item.headY + 3;
+        const distFromDefault = Math.hypot(item.labelX - item.anchorX, item.labelY - (item.headY - 12));
+        if (distFromDefault > 5) {
+          svgContent += `
+            <line x1="${item.anchorX.toFixed(1)}" y1="${targetConnectY.toFixed(1)}"
+                  x2="${item.labelX.toFixed(1)}" y2="${item.labelY.toFixed(1)}"
+                  stroke="${item.pin.accentColor}" stroke-width="1.2"
+                  opacity="${(item.limbFade * 0.9).toFixed(2)}" />
+          `;
+        }
+      });
+
+      globeTethersSvg.innerHTML = svgContent;
+    }
+
+    // Resize observer so 3D canvas stays crisp on window resize
+    new ResizeObserver(() => {
+      const w = globeContainer.clientWidth;
+      const h = globeContainer.clientHeight;
+      if (w > 0 && h > 0) {
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      }
+    }).observe(globeContainer);
+
+    // Render loop
+    function animateGlobe() {
+      requestAnimationFrame(animateGlobe);
+
+      if (cameraFlyAnim) {
+        cameraFlyAnim.progress += 0.045;
+        const t = Math.min(1, cameraFlyAnim.progress);
+        const ease = 1 - Math.pow(1 - t, 3);
+        const startDir = cameraFlyAnim.startPos.clone().normalize();
+        const endDir = cameraFlyAnim.endPos.clone().normalize();
+        const startLen = cameraFlyAnim.startPos.length();
+        const endLen = cameraFlyAnim.endPos.length();
+        const currentLen = startLen + (endLen - startLen) * ease;
+
+        const interpDir = new THREE.Vector3().lerpVectors(startDir, endDir, ease).normalize();
+        camera.position.copy(interpDir.multiplyScalar(currentLen));
+
+        if (t >= 1) cameraFlyAnim = null;
+      }
+
+      updateZoomProportionalSensitivity();
+      controls.update();
+      updateGlobePinsProjection();
+      renderer.render(scene, camera);
+    }
+    animateGlobe();
+
+    // =========================================================================
+    // LEAFLET SATELLITE MAP & ANALOG SCORING LOGIC (UNCHANGED)
+    // =========================================================================
     const worldBounds = L.latLngBounds(L.latLng(-82, -360), L.latLng(82, 360));
     const map = L.map("map", { 
       center: [12, 15], 
@@ -232,7 +758,6 @@
       attributionControl: false
     });
     
-    // Free, API-Key-Free High-Res Esri Satellite Imagery + Subtle Borders Overlay
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       maxZoom: 19
     }).addTo(map);
@@ -266,28 +791,34 @@
         : "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/OSIRIS_Mars_true_color.jpg/1920px-OSIRIS_Mars_true_color.jpg";
       document.getElementById("bg-layer").style.backgroundImage = `url('${bgUrl}')`;
       
-      document.getElementById("btn-body-Moon").className = isMoon ? "mono text-xs px-8 py-1.5 rounded-md font-bold bg-sky-500 text-black shadow-[0_0_25px_rgba(56,189,248,0.7)]" : "mono text-xs px-8 py-1.5 rounded-md font-bold text-slate-400 hover:text-white bg-transparent";
-      document.getElementById("btn-body-Mars").className = !isMoon ? "mono text-xs px-8 py-1.5 rounded-md font-bold bg-orange-500 text-black shadow-[0_0_25px_rgba(249,115,22,0.7)]" : "mono text-xs px-8 py-1.5 rounded-md font-bold text-slate-400 hover:text-white bg-transparent";
+      document.getElementById("btn-body-Moon").className = isMoon
+        ? "mono text-xs px-8 py-1.5 rounded-md font-bold bg-sky-500 text-black transition"
+        : "mono text-xs px-8 py-1.5 rounded-md font-bold text-slate-400 hover:text-white bg-transparent transition";
+      document.getElementById("btn-body-Mars").className = !isMoon
+        ? "mono text-xs px-8 py-1.5 rounded-md font-bold bg-orange-500 text-black transition"
+        : "mono text-xs px-8 py-1.5 rounded-md font-bold text-slate-400 hover:text-white bg-transparent transition";
 
       ['vis','slp','rgh','tmp','lit'].forEach(k => {
         document.getElementById(`val-${k}`).className = `mono text-[11px] font-bold ${isMoon ? 'text-sky-400' : 'text-orange-400'}`;
       });
 
+      document.getElementById("globe-header-title").textContent = `${bodyName} Globe`;
+      haloMat.color.setHex(isMoon ? 0x38BDF8 : 0xF97316);
+      applyGlobeTexture(bodyName);
+
       state.targetId = Object.keys(DATA.targets).find(k => DATA.targets[k].body === bodyName);
       state.inspectedTileId = null;
+      rebuildGlobePins();
+      focusGlobeOnTarget(state.targetId, false);
       renderAll(true);
     }
 
     function setTarget(tid) {
       state.targetId = tid;
       state.inspectedTileId = null;
+      rebuildGlobePins();
+      focusGlobeOnTarget(tid, false);
       renderAll(true);
-    }
-
-    function applyPreset(v, s, r, t, l) {
-      document.getElementById("sl-vis").value = v; document.getElementById("sl-slp").value = s;
-      document.getElementById("sl-rgh").value = r; document.getElementById("sl-tmp").value = t; document.getElementById("sl-lit").value = l;
-      onSliderChange();
     }
 
     function onSliderChange() {
@@ -298,7 +829,6 @@
       state.weights.lit = parseFloat(document.getElementById("sl-lit").value);
       state.hideFamous = document.getElementById("chk-discovery").checked;
 
-      // Keep font size fixed at text-[11px]!
       ['vis','slp','rgh','tmp','lit'].forEach(k => {
         document.getElementById(`val-${k}`).textContent = state.weights[k].toFixed(2);
         document.getElementById(`val-${k}`).className = `mono text-[11px] font-bold ${state.body === 'Moon' ? 'text-sky-400' : 'text-orange-400'}`;
@@ -384,7 +914,7 @@
       document.getElementById("dossier-score").textContent = sel.final_score.toFixed(1) + "%";
       
       const bars = [["Geomorphology", sel.vision_score], ["Slope", sel.slope_score], ["Roughness", sel.roughness_score], ["Thermal", sel.temp_swing_score], ["Lithology", sel.lithology_score]];
-      document.getElementById("score-bars").innerHTML = bars.map(([l,v]) => `<div class="mb-1.5"><div class="flex justify-between text-[10px] mb-0.5 text-slate-300 font-bold tracking-wide"><span>${l}</span><span class="text-white">${v.toFixed(1)}%</span></div><div class="h-1.5 bg-white/20 rounded shadow-inner"><div class="h-full rounded" style="width:${v}%;background:${accent};box-shadow: 0 0 10px ${accent};"></div></div></div>`).join("");
+      document.getElementById("score-bars").innerHTML = bars.map(([l,v]) => `<div class="mb-1.5"><div class="flex justify-between text-[10px] mb-0.5 text-slate-300 font-bold tracking-wide"><span>${l}</span><span class="text-white">${v.toFixed(1)}%</span></div><div class="h-1.5 bg-white/15 rounded overflow-hidden"><div class="h-full rounded" style="width:${v}%;background:${accent};"></div></div></div>`).join("");
 
       document.getElementById("spec-why").textContent = reg.why_chosen;
       document.getElementById("spec-lith").textContent = `${reg.lithology_name} (${sel.lithology_score.toFixed(0)}% match)`;
@@ -401,6 +931,7 @@
           <td class="text-right font-bold text-emerald-400 text-xs">${r.final_score.toFixed(1)}%</td>
           <td class="text-right text-slate-300">${r.vision_score.toFixed(0)}%</td>
           <td class="text-right text-slate-300">${r.slope_score.toFixed(0)}%</td>
+          <td class="text-right text-slate-300">${r.roughness_score.toFixed(0)}%</td>
           <td class="text-right text-slate-300">${r.temp_swing_score.toFixed(0)}%</td>
           <td class="text-right text-slate-300">${r.lithology_score.toFixed(0)}%</td>
         </tr>`;
