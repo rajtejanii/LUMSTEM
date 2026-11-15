@@ -8,11 +8,11 @@
 
 ## Instant Start for Judges (Zero External Downloads Required)
 
-All pre-computed NASA/ESA similarity scores and metadata (`data/tiles/metadata.csv`, `data/scores/vision.csv`, `data/scores/scalar.csv`, and the compiled frontend bundle `web/data.js`) are included directly in this repository so the application runs immediately out-of-the-box.
+All pre-computed NASA/ESA similarity scores and metadata (`data/tiles/metadata.csv`, `data/scores/vision.csv`, `data/scores/scalar.csv`, and the compiled frontend bundle `web/data.js`) are included directly in this repository so the application runs immediately.
 
 ### Option A: One-Click Windows Launcher (`run_lumstem.bat`)
 1. Double-click **`run_lumstem.bat`** in the project root directory.
-2. The script automatically verifies `web/data.js` (or creates a `.venv`/Conda environment and compiles the CSVs via `build_web_data.py` if needed), launches a local web server on port `8080`, and opens **`http://localhost:8080`** in your default browser.
+2. The script automatically verifies `web/data.js` (or creates a `.venv` and compiles the CSVs via `build_web_data.py` if needed), launches a local web server on port `8080`, and opens **`http://localhost:8080`** in your browser.
 
 ### Option B: Cross-Platform Terminal Launch (Windows / macOS / Linux)
 ```bash
@@ -41,7 +41,7 @@ Every parameter in LUMSTEM is derived from official NASA Planetary Data System (
 ### Moon (Artemis & Apollo Reference Sites)
 1. **Shackleton Crater Rim (`89.9°S`, NASA LRO LOLA 118 m/px):** Illuminated polar ridge receiving near-continuous grazing sunlight (1.5° solar elevation) adjacent to cryogenic shadows ($\Delta T = 185\text{ K}$).
 2. **Shackleton PSR Floor (`89.9°S`, NASA LRO LOLA 118 m/px):** Permanently Shadowed Region interior floor (~40–75 K, $\Delta T = 35\text{ K}$) trapping water-ice volatiles in anorthositic regolith.
-3. **Apollo 15 Hadley Rille (`26.13°N, 3.63°E`, LRO LOLA + JAXA Kaguya 59.2 m/px):** Sinuous volcanic lava channel cut into high-$\text{FeO}/\text{TiO}_2$ tholeiitic mare basalt ($\Delta T = 140\text{ K}$).
+3. **Apollo 15 Hadley Rille (`26.13°N, 3.63°E`, LRO LOLA + Kaguya 59.2 m/px):** Sinuous volcanic lava channel cut into high-$\text{FeO}/\text{TiO}_2$ tholeiitic mare basalt ($\Delta T = 140\text{ K}$).
 
 ### Mars (Rover & Human Exploration Reference Sites)
 4. **Jezero Crater Delta (`18.44°N, 77.45°E`, MGS MOLA / HRSC 200 m/px):** Mars 2020 Perseverance landing site; ancient fluvio-lacustrine delta rich in Fe/Mg-smectite clays and carbonates ($\Delta T = 65\text{ K}$).
@@ -52,28 +52,13 @@ Every parameter in LUMSTEM is derived from official NASA Planetary Data System (
 
 ## Mission Control Interface Features (`web/index.html`)
 
-* **Interactive 3D Planetary Target Globe (Three.js):** Real-time 3D Moon and Mars globes with surface-anchored landing site pins, decluttered callout labels, and automatic camera fly-to animations.
-* **Real-Time Similarity Weight Sliders & Info Popovers (`ⓘ`):** Adjust priority weights across all 5 physical dimensions with instant hover/click scientific explanations.
-* **Discovery Mode (Novel Analogs):** Filters out well-known NASA training benchmarks (*Atacama, Askja, Devon Island, El Pinacate, Kilauea, McMurdo, Wadi Rum*) to surface under-utilized planetary analogs (*Tibesti Calderas, Harrat Khaybar, Qaidam Basin, Dasht-e Lut, Danakil Depression, Salar de Arizaro, Makgadikgadi, Namib*).
-* **Synchronized Satellite Map, Analog Dossier & Leaderboard:** Clicking any marker on the Esri World Imagery satellite map or any row in the Top 10 Regional Leaderboard smoothly flies to the site and updates the right-hand **Analog Dossier** (geological rationale, lithology, ice/water state, and physical breakdown constraints).
-* **Explainable Similarity Analysis Radar Graph:** Overlays the user's **Target Mission Profile** (solid polygon) against the **Candidate Earth Site's** real similarity scores (diagonal hatched polygon) and highlights the **Verified Overlap Core** (white intersection).
-
----
-
-## Super Intelligence (SI) & AI Tool Disclosure
-
-In compliance with the 2026 NASA Space Apps Challenge rules regarding Super Intelligence (SI) tools:
-1. **Computer Vision Feature Extraction (`src/step2_vision.py`):** Uses the open-source pre-trained **Meta DINOv2 Vision Transformer (`dinov2_vits14`)** via PyTorch to extract 384-dimensional geomorphological embeddings from real NASA/ESA elevation rasters.
-2. **Code & Documentation Assistance:** Large Language Model (LLM) assistance (**Google Gemini**) was used for frontend HTML/CSS/JavaScript layout refactoring, SVG radar chart geometry, and documentation formatting. All physical formulas, dataset selections, and scientific rationales were verified by the team.
-3. **Zero NASA Branding in Generated Assets:** No NASA logos, flags, or mission insignias are used in any SI-assisted code or visual assets.
-
----
-
-## Third-Party Open-Source Libraries & Assets Attribution
-
-* **Planetary & Earth Datasets:** NASA PDS / USGS Astrogeology (`LRO LOLA`, `MGS MOLA`), JAXA (`SELENE/Kaguya`), ESA (`Mars Express HRSC`, `Copernicus GLO-30 DEM` via AWS Registry of Open Data), NASA Earthdata (`MODIS MOD11A1`, `ASTER GED`).
-* **3D & Mapping Libraries:** [Three.js](https://threejs.org/) (`r128`, MIT License), [Leaflet.js](https://leafletjs.com/) (`1.9.4`, BSD-2-Clause), Esri World Imagery basemap tiles, [Tailwind CSS](https://tailwindcss.com/) (MIT License).
-* **Planetary Surface Textures:** Wikimedia Commons public-domain orbital mosaics (`FullMoon2010.jpg`, ESA `OSIRIS_Mars_true_color.jpg`) and SolarSystemScope 2K Moon/Mars equirectangular maps (CC BY 4.0).
+* **Celestial Body & Target Switcher:** Toggle between **Moon** and **Mars** and select any of the 6 reference landing sites with adaptive frosted-glass telemetry styling.
+* **Mission Presets & Real-Time Similarity Sliders:**
+  * **Rover Nav (`0.40, 0.30, 0.20, 0.05, 0.05`):** Prioritizes 2D landform geometry, slope, and ruggedness for autonomous path-planning and wheel traction.
+  * **ISRU Drill (`0.10, 0.25, 0.10, 0.20, 0.35`):** Prioritizes mafic-silicate lithology, rig-leveling slope, and thermal regime for volatile extraction and rock drilling.
+  * **Habitat Landing (`0.20, 0.30, 0.30, 0.10, 0.10`):** Prioritizes low slope and low surface roughness for lander touchdown stability.
+* **Discovery Mode (Unrecognized Sites):** Filters out well-known NASA benchmarks (*Atacama, Askja, Devon Island, El Pinacate, Kilauea, McMurdo, Wadi Rum*) to surface under-utilized planetary analogs (*Tibesti Calderas, Harrat Khaybar, Qaidam Basin, Dasht-e Lut, Danakil Depression, Salar de Arizaro, Makgadikgadi, Namib*).
+* **Synchronized Satellite Map, Analog Dossier & Leaderboard:** Clicking any marker on the Esri World Imagery satellite map or any row in the Top 10 Regional Leaderboard smoothly flies to the site and updates the right-hand **Analog Dossier** (displaying parameter breakdown bars, geological rationale, lithology, ice/water state, and physical breakdown constraints).
 
 ---
 
