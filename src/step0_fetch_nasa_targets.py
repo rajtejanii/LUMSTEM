@@ -30,15 +30,15 @@ NASA_TARGETS = [
         "out_file": "data/raw/shackleton_dem.tif",
         "title": "Moon: Shackleton Crater South Pole (NASA LRO LOLA)",
         "url": LRO_LOLA_GLOBAL_URL,
-        "lat": -89.5,   # Near 89.9°S rim/floor boundary
+        "lat": -89.5,
         "lon": 0.0,
-        "window_size": 512,  # 512x512 so both (0,0) and (128,128) offsets in config.py work!
+        "window_size": 512,
     },
     {
         "out_file": "data/raw/hadley_dem.tif",
         "title": "Moon: Apollo 15 Hadley Rille (NASA LRO LOLA + JAXA SELENE)",
         "url": LRO_KAGUYA_MERGE_URL,
-        "lat": 26.132,  # Official Apollo 15 Lunar Module Falcon landing coordinates
+        "lat": 26.132,
         "lon": 3.633,
         "window_size": 512,
     },
@@ -46,8 +46,24 @@ NASA_TARGETS = [
         "out_file": "data/raw/jezero_dem.tif",
         "title": "Mars: Jezero Crater Delta (NASA MGS MOLA / HRSC)",
         "url": MARS_MOLA_HRSC_URL,
-        "lat": 18.444,  # Official Mars 2020 Perseverance Rover Octavia E. Butler landing site
+        "lat": 18.444,
         "lon": 77.451,
+        "window_size": 512,
+    },
+    {
+        "out_file": "data/raw/valles_dem.tif",
+        "title": "Mars: Valles Marineris - Coprates Chasma (NASA MGS MOLA / HRSC)",
+        "url": MARS_MOLA_HRSC_URL,
+        "lat": -13.50,  # Steep tectonic canyon wall & floor in central Valles Marineris
+        "lon": -61.00,
+        "window_size": 512,
+    },
+    {
+        "out_file": "data/raw/arsia_dem.tif",
+        "title": "Mars: Arsia Mons Volcanic Flank & Lava Tubes (NASA MGS MOLA / HRSC)",
+        "url": MARS_MOLA_HRSC_URL,
+        "lat": -9.20,   # Tharsis volcanic shield flank & collapse pit province
+        "lon": -120.50,
         "window_size": 512,
     },
 ]
